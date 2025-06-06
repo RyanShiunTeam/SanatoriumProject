@@ -1,0 +1,60 @@
+# 作業系統（Windows / macOS）的暫存檔/縮圖
+
+# Windows
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+$RECYCLE.BIN/
+*.lnk
+
+# 編譯時產生的類別檔或暫存檔
+*.class
+*.log
+
+# 偵錯 / 臨時檔
+*.tmp
+*.swp
+*.swo
+
+# 環境變數檔（若有在前後端使用 .env）
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+
+# VS Code：前端 (frontside) 專用
+frontside/.vscode/
+frontside/node_modules/
+
+
+# Eclipse：後端 (backendside) 專用 (Eclipse 設定檔)
+backendside/.classpath
+backendside/.project
+backendside/.settings/
+
+# Maven 編譯輸出
+backendside/target/
+
+# 若使用 Eclipse 產生的其他暫存
+*.launch
+*.log
+*.bak
+
+
+
+# IntelliJ IDEA / JetBrains（如有誤開也一併忽略）
+.idea/
+*.iml
+*.iws
+out/
+
+
+# Git 相關
+# 忽略整包壓縮檔、補丁檔
+*.patch
+*.diff
+
+# Mac / Windows 之外的 OS 特定檔案
+Desktop.ini
