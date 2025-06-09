@@ -35,7 +35,7 @@ backendside/.project
 backendside/.settings/
 
 # Maven 編譯輸出
-backendside/target/
+/target/
 
 # 若使用 Eclipse 產生的其他暫存
 *.launch
