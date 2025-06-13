@@ -1,60 +1,59 @@
-# 作業系統（Windows / macOS）的暫存檔/縮圖
-
-# Windows
+# =====================================
+# 作業系統（Windows / macOS）的暫存檔／縮圖
+# =====================================
 Thumbs.db
 ehthumbs.db
 Desktop.ini
 $RECYCLE.BIN/
 *.lnk
 
+# =====================================
 # 編譯時產生的類別檔或暫存檔
+# =====================================
 *.class
 *.log
 
-# 偵錯 / 臨時檔
+# =====================================
+# 偵錯／臨時檔
+# =====================================
 *.tmp
 *.swp
 *.swo
+*.bak
+*.launch
 
+# =====================================
 # 環境變數檔（若有在前後端使用 .env）
+# =====================================
 .env
 .env.local
 .env.development.local
 .env.test.local
 .env.production.local
 
+# =====================================
+# VS Code：前端 (frontend) 專用
+# =====================================
+frontend/.vscode/
+frontend/node_modules/
 
-# VS Code：前端 (frontside) 專用
-frontside/.vscode/
-frontside/node_modules/
+# =====================================
+# Eclipse：後端 (backend) 專用
+# =====================================
+backend/.classpath
+backend/.project
+backend/.settings/
 
-
-# Eclipse：後端 (backendside) 專用 (Eclipse 設定檔)
-backendside/.classpath
-backendside/.project
-backendside/.settings/
-
-# Maven 編譯輸出
-/target/
-
-# 若使用 Eclipse 產生的其他暫存
-*.launch
-*.log
-*.bak
-
-
-
-# IntelliJ IDEA / JetBrains（如有誤開也一併忽略）
+# =====================================
+# IntelliJ IDEA / JetBrains
+# =====================================
 .idea/
 *.iml
 *.iws
 out/
 
-
-# Git 相關
-# 忽略整包壓縮檔、補丁檔
+# =====================================
+# Git 相關：忽略補丁、差異檔
+# =====================================
 *.patch
 *.diff
-
-# Mac / Windows 之外的 OS 特定檔案
-Desktop.ini
