@@ -158,7 +158,7 @@ public class DeviceDemo {
         int position = Integer.parseInt(scanner.nextLine().trim());
 
         DeviceCategory cat = new DeviceCategory();
-        cat.setId(id);
+        //cat.setId(id);
         cat.setName(name);
         cat.setPosition(position);
 
@@ -167,8 +167,8 @@ public class DeviceDemo {
     }
 
     private static void updateCategory(Scanner scanner, DeviceCategoryService categoryService) throws Exception {
-        System.out.println("請輸入要更新的輔具分類ID：");
-        String id = scanner.nextLine().trim();
+    	//System.out.println("請輸入要更新的輔具分類ID：");
+    	//String id = scanner.nextLine().trim();
         DeviceCategory cat = categoryService.getCategoryById(id);
         if (cat == null) {
             System.out.println("找不到該分類ID");
