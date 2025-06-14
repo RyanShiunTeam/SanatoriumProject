@@ -150,8 +150,8 @@ public class DeviceDemo {
     }
 
     private static void addCategory(Scanner scanner, DeviceCategoryService categoryService) throws Exception {
-        System.out.println("請輸入輔具分類ID：");
-        String id = scanner.nextLine().trim();
+        //System.out.println("請輸入輔具分類ID：");
+        //String id = scanner.nextLine().trim();
         System.out.println("請輸入分類名稱：");
         String name = scanner.nextLine().trim();
         System.out.println("請輸入分類排序（整數）：");

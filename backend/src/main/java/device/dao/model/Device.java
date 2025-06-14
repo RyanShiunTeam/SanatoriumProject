@@ -1,5 +1,7 @@
 package device.dao.model;
 
+import java.util.UUID;
+
 public class Device {
     private String id;
     private String name;           // 商品名稱
@@ -20,7 +22,7 @@ public class Device {
     public Device(String id, String name, String sku, java.math.BigDecimal unitPrice,
                   int inventory, String description, String image, boolean isOnline,
                   DeviceCategory category) {
-        this.id = id;
+    	this.id = UUID.randomUUID().toString().replace("-", ""); // 自動產生
         this.name = name;
         this.sku = sku;
         this.unitPrice = unitPrice;

@@ -2,6 +2,7 @@ package device.dao.model;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 public class DeviceCategory {
     private String id;
@@ -13,7 +14,7 @@ public class DeviceCategory {
 
     // 建構子
     public DeviceCategory(String id, String name, int position) {
-        this.id = id;
+    	this.id = UUID.randomUUID().toString().replace("-", ""); // 自動產生
         this.name = name;
         this.position = position;
     }
