@@ -13,7 +13,7 @@
 	</classpathentry>
 	<classpathentry kind="con" path="org.eclipse.jst.j2ee.internal.web.container"/>
 	<classpathentry kind="con" path="org.eclipse.jst.j2ee.internal.module.container"/>
-	<classpathentry kind="lib" path="C:/Users/user/Downloads/mssql-jdbc-12.10.0.jre11.jar">
+	<classpathentry kind="lib" path="C:/Java2/jdbcWorkspace/sqljdbc_12.10/cht/jars/mssql-jdbc-12.10.0.jre11.jar">
 		<attributes>
 			<attribute name="module" value="true"/>
 		</attributes>
