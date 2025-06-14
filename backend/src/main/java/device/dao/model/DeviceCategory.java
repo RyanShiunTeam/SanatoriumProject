@@ -12,13 +12,14 @@ public class DeviceCategory {
     // has-many 關係：這個分類有多個輔具
     private List<Device> devices = new ArrayList<>();
 
-    // 建構子
-    public DeviceCategory(String id, String name, int position) {
-    	this.id = UUID.randomUUID().toString().replace("-", ""); // 自動產生
+    // 自動產生 UUID 的建構子
+    public DeviceCategory(String name, int position) {
+        this.id = UUID.randomUUID().toString(); // 自動產生唯一 ID
         this.name = name;
         this.position = position;
     }
 
+    // 預設建構子
     public DeviceCategory() {
     }
 

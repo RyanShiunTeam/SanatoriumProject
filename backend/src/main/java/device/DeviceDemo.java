@@ -150,25 +150,39 @@ public class DeviceDemo {
     }
 
     private static void addCategory(Scanner scanner, DeviceCategoryService categoryService) throws Exception {
-        //System.out.println("請輸入輔具分類ID：");
-        //String id = scanner.nextLine().trim();
+        // 自動產生 ID（使用 UUID）
+        String id = java.util.UUID.randomUUID().toString().replace("-","");
+
         System.out.println("請輸入分類名稱：");
         String name = scanner.nextLine().trim();
-        System.out.println("請輸入分類排序（整數）：");
-        int position = Integer.parseInt(scanner.nextLine().trim());
 
+        // 防呆處理：分類排序必須為整數
+        int position = -1;
+        while (true) {
+            System.out.print("請輸入分類排序（整數）：");
+            String input = scanner.nextLine().trim();
+            try {
+                position = Integer.parseInt(input);
+                break;
+            } catch (NumberFormatException e) {
+                System.out.println("輸入格式錯誤，請重新輸入整數！");
+            }
+        }
+
+        // 建立分類物件並儲存
         DeviceCategory cat = new DeviceCategory();
-        //cat.setId(id);
+        cat.setId(id);
         cat.setName(name);
         cat.setPosition(position);
 
         categoryService.addCategory(cat);
-        System.out.println("新增成功！");
+        System.out.println("新增成功！ID為：" + id);
     }
 
+
     private static void updateCategory(Scanner scanner, DeviceCategoryService categoryService) throws Exception {
-    	//System.out.println("請輸入要更新的輔具分類ID：");
-    	//String id = scanner.nextLine().trim();
+    	System.out.println("請輸入要更新的輔具分類ID：");
+    	String id = scanner.nextLine().trim();
         DeviceCategory cat = categoryService.getCategoryById(id);
         if (cat == null) {
             System.out.println("找不到該分類ID");
