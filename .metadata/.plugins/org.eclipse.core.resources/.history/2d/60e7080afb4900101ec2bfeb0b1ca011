@@ -1,0 +1,37 @@
+package bus;
+
+public class busDAO {
+	
+	// 新增復康巴士資料
+	public void saveBus (Rehabus rehabus) {
+	String sql = "INSERT INTO rehabus(car_dealership, bus_brand," + "bus_model, seat_capacity, "
+			+ "wheelchair_capacity, license_plate) VALUES (?,?,?,?,?,?)";
+
+	try (Connection connection = JDBCutil.getConnection();
+			PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
+
+		preparedStatement.setString(1, hakkaBooks.getBookName());
+		preparedStatement.setString(2, hakkaBooks.getBookType());
+		preparedStatement.setString(3, hakkaBooks.getRocYearMonthDate());
+		preparedStatement.setString(4, hakkaBooks.getPubUnit());
+		preparedStatement.setString(5, hakkaBooks.getAuthor());
+		preparedStatement.setInt(6, hakkaBooks.getSubsidy());
+		
+		// 執行 SQL，真正把資料寫入資料庫
+					preparedStatement.execute();
+					System.out.println("新增商品完成");
+
+				} catch (SQLException e) {
+					e.printStackTrace();
+				}
+				// System.out.println("寫入資料庫");
+
+	}
+	
+	
+	
+	
+	
+	
+
+}

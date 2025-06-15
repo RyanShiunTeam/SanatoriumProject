@@ -1,0 +1,14 @@
+package bus.model;
+
+public class Bus {
+	
+	private int busId;                    //車輛流水號
+	private String carDealership;         //車行
+	private String busBrand;              //汽車廠牌
+	private String busModel;              //型號
+	private int seatCapacity;             //一般座位
+	private int wheelchairCapacity;       //輪椅座位
+	private String licensePlate;          //車牌號碼
+
+}
+

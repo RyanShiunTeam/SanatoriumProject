@@ -1,0 +1,7 @@
+INDEX VERSION 1.4+C:\git\SanatoriumProject\.metadata\.plugins\org.eclipse.wst.jsdt.core\indexes
+3343712173.index
+3708969028.index
+2916226910.index
+2280572522.index
+3526841821.index
+1924880233.index
