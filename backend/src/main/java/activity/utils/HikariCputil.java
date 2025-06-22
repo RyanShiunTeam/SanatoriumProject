@@ -1,4 +1,4 @@
-package utils;
+package activity.utils;
 
 import javax.sql.DataSource;
 
@@ -14,8 +14,8 @@ public class HikariCputil {
 		// 設定連線池的基本參數 (記得改成自己的資料庫連線資訊)
 		config.setDriverClassName("com.microsoft.sqlserver.jdbc.SQLServerDriver");
 		config.setJdbcUrl("jdbc:sqlserver://localhost:1433;DatabaseName=Sanatorium;encrypt=false");
-		config.setUsername("ryan");
-		config.setPassword("9426");
+		config.setUsername("gary");
+		config.setPassword("123456");
 		hikariDataSource = new HikariDataSource(config);
 			
 		return hikariDataSource;
