@@ -1,4 +1,4 @@
-package tina_util;
+package device;
 
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
