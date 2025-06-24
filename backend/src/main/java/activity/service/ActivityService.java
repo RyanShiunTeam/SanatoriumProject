@@ -9,11 +9,11 @@ public class ActivityService {
 	private ActivityDao activityDao;
 	
 	// 新增活動
-	public int addActivity(Activity a) {
+	public int addActivity(Activity act) {
 		if (activityDao == null) {
 			activityDao = new ActivityDao();
 		}
-		return activityDao.insert(a);
+		return activityDao.insert(act);
 	}
 	
 	// 查詢單一活動
@@ -41,11 +41,11 @@ public class ActivityService {
 	}
 	
 	// 刪除活動
-	public boolean deleteActivity(String name) {
+	public boolean deleteActivity(int id) {
 		if (activityDao == null) {
 			activityDao = new ActivityDao();
 		}
-		return activityDao.delete(name);
+		return activityDao.delete(id);
 	}
 	
 }

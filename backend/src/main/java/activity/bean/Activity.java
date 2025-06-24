@@ -1,20 +1,24 @@
 package activity.bean;
 
 public class Activity {
+	private int id;  
     private String Name;
     private String category;
     private int Limit;
-    private int participant;
     private String Date;
     private String Time;
     private String location;
     private String instructor;
-    private String status;
-    private String registrationStart;
-    private String registrationEnd;
+    private boolean status;
     private String description;
     
-    public String getName() {
+    public int getId() {
+        return id;
+    }
+    public void setId(int id) {
+        this.id = id;
+    }
+	public String getName() {
 		return Name;
 	}
 	public void setName(String name) {
@@ -31,12 +35,6 @@ public class Activity {
 	}
 	public void setLimit(int limit) {
 		Limit = limit;
-	}
-	public int getParticipant() {
-		return participant;
-	}
-	public void setParticipant(int participant) {
-		this.participant = participant;
 	}
 	public String getDate() {
 		return Date;
@@ -62,23 +60,11 @@ public class Activity {
 	public void setInstructor(String instructor) {
 		this.instructor = instructor;
 	}
-	public String getStatus() {
+	public boolean isStatus() {
 		return status;
 	}
-	public void setStatus(String status) {
+	public void setStatus(boolean status) {
 		this.status = status;
-	}
-	public String getRegistrationStart() {
-		return registrationStart;
-	}
-	public void setRegistrationStart(String registrationStart) {
-		this.registrationStart = registrationStart;
-	}
-	public String getRegistrationEnd() {
-		return registrationEnd;
-	}
-	public void setRegistrationEnd(String registrationEnd) {
-		this.registrationEnd = registrationEnd;
 	}
 	public String getDescription() {
 		return description;
@@ -86,5 +72,6 @@ public class Activity {
 	public void setDescription(String description) {
 		this.description = description;
 	}
-	
+    
+    
 }
