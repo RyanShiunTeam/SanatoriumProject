@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8" />
+    <title>新增輔具</title>
+    <!-- 簡單的 CSS 美化 -->
+    <style>
+        body {
+            font-family: "Microsoft JhengHei", Arial, sans-serif;
+            margin: 40px;
+            background-color: #f9f9f9;
+        }
+        .container {
+            background-color: white;
+            padding: 25px 30px;
+            max-width: 600px;
+            border: 1px solid #ccc;
+        }
+        h2 {
+            color: #333;
+        }
+        label {
+            display: block;
+            margin-top: 12px;
+            font-weight: bold;
+        }
+        input, select {
+            width: 100%;
+            padding: 6px;
+            margin-top: 5px;
+            box-sizing: border-box;
+        }
+        input[type="submit"] {
+            width: auto;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            margin-top: 20px;
+            padding: 8px 14px;
+            cursor: pointer;
+        }
+        input[type="submit"]:hover {
+            background-color: #45a049;
+        }
+        a {
+            display: inline-block;
+            margin-top: 20px;
+            color: #333;
+            text-decoration: none;
+        }
+        a:hover {
+            text-decoration: underline;
+        }
+        #preview {
+            margin-top: 10px;
+            max-width: 200px;
+            display: none;
+            border: 1px solid #ccc;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <h2>新增輔具</h2>
+     <!-- 表單：送出資料給 DeviceAddServlet，支援圖片上傳 -->
+    <form method="post" action="/DeviceAddServlet" enctype="multipart/form-data">
+    
+        <label for="name">名稱：</label>
+        <input type="text" name="name" id="name" required />
+
+        <label for="sku">SKU：</label>
+        <input type="text" name="sku" id="sku" required />
+
+        <label for="unitPrice">單價：</label>
+        <input type="number" name="unitPrice" id="unitPrice" step="0.01" required />
+
+        <label for="inventory">庫存：</label>
+        <input type="number" name="inventory" id="inventory" required />
+
+        <label for="description">描述：</label>
+        <input type="text" name="description" id="description" />
+
+        <label for="imageFile">圖片上傳：</label>
+        <input type="file" id="imageFile" name="imageFile" accept="image/*" required />
+        <img id="preview" src="#" alt="預覽圖片" />
+
+		 <!-- 是否上架 -->
+        <label for="isOnline">是否上架：</label>
+        <select name="isOnline" id="isOnline">
+            <option value="true">是</option>
+            <option value="false">否</option>
+        </select>
+
+        <label for="categoryId">分類 ID：</label>
+        <input type="number" name="categoryId" id="categoryId" required />
+        
+		<!-- 送出按鈕 -->
+        <input type="submit" value="新增" />
+    </form>
+    <!-- 返回查詢頁連結 -->
+    <a href="/DevicePage/deviceSearch.html">🔙 回查詢頁</a>
+</div>
+
+<!-- 圖片即時預覽功能 -->
+<script>
+    document.getElementById("imageFile").addEventListener("change", function (e) {
+        const reader = new FileReader();
+        reader.onload = function (event) {
+            const img = document.getElementById("preview");
+            img.src = event.target.result;
+            img.style.display = "block";
+        };
+        if (e.target.files.length > 0) {
+            reader.readAsDataURL(e.target.files[0]);
+        }
+    });
+</script>
+</body>
+</html>
