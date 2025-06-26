@@ -114,7 +114,7 @@ public class CaregiverDAO {
 	public boolean updateCaregiver(Caregiver caregiver) throws SQLException {
 		String sql = "UPDATE caregivers SET chineseName=?, gender=?, "
 				+ "phone=?, email=?, experience_years=?, photo=? "
-				+ "WHERE caregiver_id=?";
+				+ "WHERE caregiver_Id=?";
 
 		try (Connection conn = HikariCputil.getDataSource().getConnection();
 				PreparedStatement pstmt = conn.prepareStatement(sql)) {
