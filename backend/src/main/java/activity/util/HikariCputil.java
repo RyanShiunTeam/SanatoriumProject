@@ -1,4 +1,4 @@
-package activity.utils;
+package activity.util;
 
 import javax.sql.DataSource;
 
