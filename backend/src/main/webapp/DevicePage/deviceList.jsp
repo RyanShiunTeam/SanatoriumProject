@@ -4,13 +4,16 @@
 <%@ page import="device.bean.DeviceCategory" %>
 
 <!--  登入檢查區塊 -->
+<%-- 
 <%
     String user = (String) session.getAttribute("user");
     if (user == null) {
-        response.sendRedirect(request.getContextPath() + "/jsp/login.jsp");
+        response.sendRedirect(request.getContextPath() + "/DevicePage/login.jsp");
         return;
     }
 %>
+登入檢查區塊已註解 --%>
+
 <!DOCTYPE html>
 <html lang="zh-TW">
 <head>
@@ -154,6 +157,7 @@
 
 <!--  JS功能 toggleSelectAll()：勾選／取消全選。  -->
 <!--  JS功能 submitBatchEdit()：送出勾選的項目 ID 給 JSP 做修改。  -->
+<script>
     function toggleSelectAll(checkbox) {
         const checkboxes = document.querySelectorAll('input[name="id"]');
         checkboxes.forEach(cb => cb.checked = checkbox.checked);
