@@ -1,11 +1,10 @@
-package nursingHome.dao.model;
-
+package roomType.model;
 
 public class RoomType {
     private int id;//房子id
     private String name;//房名
     private int price;//價格
-    private double area;//坪數
+    private int capacity;//坪數
     private String description;//基本描述
     private String imageUrl;//房型圖片
     private  String specialFeatures;
@@ -39,12 +38,12 @@ public class RoomType {
 		this.price = price;
 	}
 
-	public double getArea() {
-		return area;
+	public int getCapacity() {
+		return capacity;
 	}
 
-	public void setArea(double area) {
-		this.area = area;
+	public void setCapacity(int capacity) {
+		this.capacity = capacity;
 	}
 
 	public String getDescription() {
@@ -73,7 +72,7 @@ public class RoomType {
 
 	@Override
 	public String toString() {
-		return "RoomType [id=" + id + ", name=" + name + ", price=" + price + ", area=" + area + ", description="
+		return "RoomType [id=" + id + ", name=" + name + ", price=" + price + ", capacity=" + capacity + ", description="
 				+ description + ", imageUrl=" + imageUrl + ", specialFeatures=" + specialFeatures + "]";
 	}
 	
