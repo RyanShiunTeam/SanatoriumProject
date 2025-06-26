@@ -5,7 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import activity.bean.Activity;
-import utils.HikariCputil;
+import activity.util.HikariCputil;
 
 public class ActivityDao {
 
@@ -109,7 +109,7 @@ public class ActivityDao {
         return list;
     }
 
-    // 依據name修改活動
+    // 修改活動
     public boolean update(Activity act) {
     	String sql = "UPDATE Activity SET name=?, category=?, [limit]=?, date=?, time=?, location=?, instructor=?, status=?, description=? " +
                 "WHERE id=?";
@@ -136,7 +136,7 @@ public class ActivityDao {
         }
     }
 
-    // 依據name刪除活動
+    // 刪除活動
     public boolean delete(int id) {
     	String sql = "DELETE FROM Activity WHERE id = ?";
 
@@ -149,5 +149,38 @@ public class ActivityDao {
              e.printStackTrace();
              return false;
         }
+    }
+    
+ // 模糊查詢活動名稱
+    public List<Activity> queryByName(String name) {
+        List<Activity> list = new ArrayList<>();
+        String sql = "SELECT * FROM Activity WHERE name LIKE ?";
+
+        try (Connection conn = HikariCputil.getDataSource().getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+            stmt.setString(1, "%" + name + "%");
+            ResultSet rs = stmt.executeQuery();
+
+            while (rs.next()) {
+            	Activity act = new Activity();
+                act.setId(rs.getInt("id"));
+                act.setName(rs.getString("name"));
+                act.setCategory(rs.getString("category"));
+                act.setLimit(rs.getInt("limit"));
+                act.setDate(rs.getString("date"));  
+                act.setTime(rs.getString("time"));
+                act.setLocation(rs.getString("location"));
+                act.setInstructor(rs.getString("instructor"));
+                act.setStatus(rs.getBoolean("status"));
+                act.setDescription(rs.getString("description"));
+                list.add(act);
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return list;
     }
 }
