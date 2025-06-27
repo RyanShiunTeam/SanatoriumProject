@@ -130,13 +130,7 @@
             <h2>新增照服員</h2>
         </div>
         
-        <!-- 除錯資訊 -->
-        <div class="debug-info">
-            <strong>除錯資訊：</strong><br>
-            表單將提交到：<span id="formAction"></span><br>
-            當前頁面：<span id="currentUrl"></span><br>
-            專案路徑：<span id="contextPath"></span>
-        </div>
+     
         
         <!-- 修正表單設定 - 使用動態路徑 -->
         <form id="caregiverForm" method="post" enctype="multipart/form-data" accept-charset="UTF-8" onsubmit="return validateAndDebugForm()">
@@ -221,9 +215,9 @@
             const currentPath = window.location.pathname;
             
             // 計算專案的根路徑
-            // 假設當前路徑是 /專案名/CaregiverPage/add.html
+            // 當前路徑格式: /backend/CaregiverPage/add.html
             const pathParts = currentPath.split('/');
-            const projectName = pathParts[1]; // 第二個部分是專案名稱
+            const projectName = pathParts[1]; // backend
             const contextPath = '/' + projectName;
             
             // 設定表單的 action
@@ -231,19 +225,26 @@
             const formAction = contextPath + '/caregiver/create/add';
             form.action = formAction;
             
-            // 設定取消按鈕的連結
+            // 設定取消按鈕的連結 - 返回照服員管理
             document.getElementById('cancelBtn').href = contextPath + '/caregiver/';
-            document.getElementById('backHomeBtn').href = contextPath + '/';
+            
+            // 設定返回系統按鈕的連結 - 修正版
+            const backSystemPath = contextPath + '/backHome.html';
+            document.getElementById('backHomeBtn').href = backSystemPath;
             
             // 顯示除錯資訊
             document.getElementById('currentUrl').textContent = currentUrl;
             document.getElementById('contextPath').textContent = contextPath;
             document.getElementById('formAction').textContent = formAction;
+            document.getElementById('backSystemPath').textContent = backSystemPath;
             
             console.log('=== 路徑設定完成 ===');
             console.log('當前 URL:', currentUrl);
+            console.log('當前路徑:', currentPath);
+            console.log('專案名稱:', projectName);
             console.log('專案路徑:', contextPath);
             console.log('表單 Action:', formAction);
+            console.log('返回系統路徑:', backSystemPath);
         };
         
         // 表單驗證和除錯
@@ -333,6 +334,30 @@
             } else {
                 preview.style.display = 'none';
             }
+        });
+
+        // 測試返回系統連結
+        function testBackSystemLink() {
+            const backLink = document.getElementById('backHomeBtn').href;
+            console.log('測試返回系統連結:', backLink);
+            
+            // 嘗試用 fetch 測試連結是否有效
+            fetch(backLink, { method: 'HEAD' })
+                .then(response => {
+                    if (response.ok) {
+                        console.log('✅ 返回系統連結有效');
+                    } else {
+                        console.log('❌ 返回系統連結無效，狀態碼:', response.status);
+                    }
+                })
+                .catch(error => {
+                    console.log('❌ 返回系統連結測試失敗:', error);
+                });
+        }
+
+        // 頁面載入完成後測試連結
+        document.addEventListener('DOMContentLoaded', function() {
+            setTimeout(testBackSystemLink, 1000); // 1秒後測試連結
         });
     </script>
 </body>

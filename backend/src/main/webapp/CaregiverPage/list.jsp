@@ -66,9 +66,12 @@
             border-radius: 4px;
             border: none;
             cursor: pointer;
+            font-size: 14px;
+            transition: all 0.2s;
         }
         .btn:hover {
             background-color: #0056b3;
+            transform: translateY(-1px);
         }
         .btn-danger {
             background-color: #dc3545;
@@ -135,13 +138,42 @@
             border-radius: 12px;
             font-size: 12px;
         }
+        /* 刪除確認對話框樣式 */
+        .delete-modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.5);
+        }
+        .delete-modal-content {
+            background-color: white;
+            margin: 15% auto;
+            padding: 20px;
+            border-radius: 8px;
+            width: 400px;
+            text-align: center;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.3);
+        }
+        .delete-modal h3 {
+            color: #dc3545;
+            margin-bottom: 15px;
+        }
+        .delete-modal-buttons {
+            margin-top: 20px;
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+        }
     </style>
 </head>
 <body>
     <div class="container">
         <div class="header">
             <div class="header-left">
-                <!-- 直接指向 backHome.html -->
                 <a href="<%=request.getContextPath()%>/backHome.html" class="back-btn">← 返回主系統</a>
                 <h1>照服員管理系統</h1>
             </div>
@@ -204,8 +236,11 @@
                     <tr>
                         <td><%= caregiver.getCaregiverId() %></td>
                         <td>
-                            <% if (caregiver.getPhoto() != null && !caregiver.getPhoto().trim().isEmpty()) { %>
-                                <img src="<%=request.getContextPath()%><%= caregiver.getPhoto() %>" 
+                            <% 
+                                String photoPath = caregiver.getPhoto();
+                                if (photoPath != null && !photoPath.trim().isEmpty()) { 
+                            %>
+                                <img src="<%=request.getContextPath()%><%= photoPath %>" 
                                      alt="照服員照片" 
                                      style="width: 50px; height: 50px; object-fit: cover; border-radius: 50%; border: 2px solid #ddd;"
                                      onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
@@ -241,7 +276,11 @@
                             <div class="actions">
                                 <a href="<%=request.getContextPath()%>/caregiver/view?id=<%= caregiver.getCaregiverId() %>" class="btn">查看</a>
                                 <a href="<%=request.getContextPath()%>/caregiver/edit?id=<%= caregiver.getCaregiverId() %>" class="btn btn-warning">編輯</a>
-                                <button type="button" class="btn btn-danger" onclick="deleteCaregiver(<%= caregiver.getCaregiverId() %>, '<%= caregiver.getChineseName() %>')">刪除</button>
+                                <button type="button" 
+                                        class="btn btn-danger" 
+                                        onclick="confirmDelete(<%= caregiver.getCaregiverId() %>, '<%= caregiver.getChineseName().replace("'", "\\'") %>')">
+                                    刪除
+                                </button>
                             </div>
                         </td>
                     </tr>
@@ -277,23 +316,93 @@
         </div>
     </div>
     
+    <!-- 自定義刪除確認對話框 -->
+    <div id="deleteModal" class="delete-modal">
+        <div class="delete-modal-content">
+            <h3>⚠️ 確認刪除</h3>
+            <p id="deleteMessage">確定要刪除此照服員嗎？</p>
+            <p style="color: #666; font-size: 14px;">此操作無法復原！</p>
+            <div class="delete-modal-buttons">
+                <button type="button" class="btn btn-danger" onclick="executeDelete()">確定刪除</button>
+                <button type="button" class="btn" onclick="cancelDelete()">取消</button>
+            </div>
+        </div>
+    </div>
+    
+    <!-- 隱藏的刪除表單 -->
+    <form id="deleteForm" method="POST" action="<%=request.getContextPath()%>/caregiver/delete" style="display: none;">
+        <input type="hidden" id="deleteId" name="id" value="">
+    </form>
+    
     <script>
-        function deleteCaregiver(id, name) {
-            if (confirm('確定要刪除照服員「' + name + '」嗎？此操作無法復原！')) {
-                var form = document.createElement('form');
-                form.method = 'POST';
-                form.action = '<%=request.getContextPath()%>/caregiver/delete';
-                
-                var idInput = document.createElement('input');
-                idInput.type = 'hidden';
-                idInput.name = 'id';
-                idInput.value = id;
-                
-                form.appendChild(idInput);
-                document.body.appendChild(form);
-                form.submit();
+        // 全域變數
+        let deleteTargetId = null;
+        let deleteTargetName = null;
+        
+        /**
+         * 顯示刪除確認對話框
+         */
+        function confirmDelete(id, name) {
+            deleteTargetId = id;
+            deleteTargetName = name;
+            
+            // 更新對話框內容
+            document.getElementById('deleteMessage').textContent = 
+                '確定要刪除照服員「' + name + '」嗎？';
+            
+            // 顯示對話框
+            document.getElementById('deleteModal').style.display = 'block';
+        }
+        
+        /**
+         * 執行刪除操作
+         */
+        function executeDelete() {
+            if (deleteTargetId === null) {
+                alert('錯誤：無效的刪除目標');
+                return;
+            }
+            
+            // 設定隱藏表單的 ID 值
+            document.getElementById('deleteId').value = deleteTargetId;
+            
+            // 隱藏對話框
+            document.getElementById('deleteModal').style.display = 'none';
+            
+            // 提交表單
+            document.getElementById('deleteForm').submit();
+        }
+        
+        /**
+         * 取消刪除操作
+         */
+        function cancelDelete() {
+            // 重置變數
+            deleteTargetId = null;
+            deleteTargetName = null;
+            
+            // 隱藏對話框
+            document.getElementById('deleteModal').style.display = 'none';
+        }
+        
+        /**
+         * 點擊對話框外部時關閉
+         */
+        window.onclick = function(event) {
+            const modal = document.getElementById('deleteModal');
+            if (event.target === modal) {
+                cancelDelete();
             }
         }
+        
+        /**
+         * ESC 鍵關閉對話框
+         */
+        document.addEventListener('keydown', function(event) {
+            if (event.key === 'Escape') {
+                cancelDelete();
+            }
+        });
         
         // 自動隱藏成功訊息
         document.addEventListener('DOMContentLoaded', function() {

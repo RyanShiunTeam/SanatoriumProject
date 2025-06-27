@@ -73,7 +73,7 @@
             background-color: #007bff;
             color: white;
             text-decoration: none;
-            border-radius: 4px;
+            border-radius: 6px;
             border: none;
             cursor: pointer;
             font-size: 14px;
@@ -173,7 +173,7 @@
         </c:if>
         
         <c:if test="${not empty caregiver}">
-            <!-- 修改表單路徑為 SanatoriumProject 結構 -->
+            <!-- 修改表單路徑 -->
             <form action="${pageContext.request.contextPath}/caregiver/update/update" method="post" enctype="multipart/form-data">
                 <!-- 隱藏的ID欄位 -->
                 <input type="hidden" name="caregiverId" value="${caregiver.caregiverId}">
