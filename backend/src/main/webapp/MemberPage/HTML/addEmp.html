@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8">
+  <title>新增員工</title>
+  <link rel="stylesheet" href="../CSS/add.css">
+</head>
+<body>
+  <div class="add-container">
+    <h2>新增員工</h2>
+    <form id="addEmpForm" autocomplete="off">
+      <label for="empName">姓名
+        <input type="text" id="empName" required placeholder="請輸入姓名">
+      </label>
+      <label for="empPwd">密碼
+        <input type="password" id="password" required placeholder="請輸入密碼">
+      </label>
+      <label for="empEmail">信箱 (忘記密碼用)
+        <input type="email" id="email" required placeholder="請輸入信箱">
+      </label>
+      <button type="submit">確認新增</button>
+      <p id="msg" class="msg"></p>
+    </form>
+    
+    <div class="btn-group">
+      <a href="queryEmp.html"><button type="button" class="cancel-btn">返回查詢</button></a>
+    </div>
+  </div>
+  <script src="../JS/add.js"></script>
+</body>
+</html>

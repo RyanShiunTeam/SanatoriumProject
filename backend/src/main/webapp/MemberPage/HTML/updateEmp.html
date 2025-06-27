@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8">
+  <title>修改員工資料</title>
+  <link rel="stylesheet" href="../CSS/add.css">
+</head>
+<body>
+  <div class="add-container">
+    <h2>修改員工資料</h2>
+    <form id="updateEmpForm" autocomplete="off">
+      <label for="empID">員工編號
+        <div id="userID"></div>
+      </label>
+      <label for="empCreatedAt">到職日
+        <div id="createdAt" ></div>
+      </label>
+      <label for="empName">姓名
+        <input type="text" id="userName">
+      </label>
+      <label for="empEmail">信箱
+        <input type="email" id="email">
+      </label>
+      <label for="role">權限
+        <select id="role"></select>
+      </label>
+      <button type="submit">確認修改</button>
+      <p id="msg" class="msg"></p>
+    </form>
+    
+    <div class="btn-group">
+      <a href="queryEmp.html"><button type="button" class="cancel-btn">返回查詢</button></a>
+    </div>
+  </div>
+  <script src="../JS/update.js"></script>
+</body>
+</html>

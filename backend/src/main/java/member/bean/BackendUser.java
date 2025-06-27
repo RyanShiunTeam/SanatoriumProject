@@ -1,29 +1,30 @@
 package member.bean;
 
 import java.io.Serializable;
-import java.time.LocalDate;
+import java.sql.Date;
+
 
 public class BackendUser implements Serializable {
     private static final long serialVersionUID = 1L;
 
-    private int userId;
+    private int userID;
     private String userName;
-    private String passWord;
+    private String password;
     private String email;
     private String role;
     private boolean isActive;
-    private LocalDate createdAt;
-    private LocalDate updatedAt;
+    private Date createdAt;
+    private Date updatedAt;
 
 
     public BackendUser() {
     }
 
-    public BackendUser(int userId, String userName, String passWord, String email,
-                       String role, boolean isActive, LocalDate createdAt, LocalDate updatedAt) {
-        this.userId = userId;
+    public BackendUser(int userID, String userName, String password, String email,
+                       String role, boolean isActive, Date createdAt, Date updatedAt) {
+        this.userID = userID;
         this.userName = userName;
-        this.passWord = passWord;
+        this.password = password;
         this.email = email;
         this.role = role;
         this.isActive = isActive;
@@ -31,12 +32,12 @@ public class BackendUser implements Serializable {
         this.updatedAt = updatedAt;
     }
 
-    public int getUserId() {
-        return userId;
+    public int getuserID() {
+        return userID;
     }
 
-    public void setUserId(int userId) {
-        this.userId = userId;
+    public void setuserID(int userID) {
+        this.userID = userID;
     }
 
     public String getUserName() {
@@ -48,11 +49,11 @@ public class BackendUser implements Serializable {
     }
 
     public String getPassWord() {
-        return passWord;
+        return password;
     }
 
-    public void setPassWord(String passWord) {
-        this.passWord = passWord;
+    public void setPassWord(String password) {
+        this.password = password;
     }
 
     public String getEmail() {
@@ -79,28 +80,28 @@ public class BackendUser implements Serializable {
         isActive = active;
     }
 
-    public LocalDate getCreatedAt() {
+    public Date getCreatedAt() {
         return createdAt;
     }
 
-    public void setCreatedAt(LocalDate createdAt) {
+    public void setCreatedAt(Date createdAt) {
         this.createdAt = createdAt;
     }
 
-    public LocalDate getUpdatedAt() {
+    public Date getUpdatedAt() {
         return updatedAt;
     }
 
-    public void setUpdatedAt(LocalDate updatedAt) {
+    public void setUpdatedAt(Date updatedAt) {
         this.updatedAt = updatedAt;
     }
 
     @Override
     public String toString() {
         return "BackendUser{" +
-               "userId=" + userId +
+               "userID=" + userID +
                ", userName='" + userName + '\'' +
-               ", passWord='" + passWord + '\'' +
+               ", password='" + password + '\'' +
                ", email='" + email + '\'' +
                ", role='" + role + '\'' +
                ", isActive=" + isActive +

@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8">
+  <title>忘記密碼</title>
+  <link rel="stylesheet" href="MemberPage/CSS/forgot.css">
+</head>
+<body>
+  <div class="container">
+    <h2>忘記密碼</h2>
+    <!-- Step 1 輸入 UserID 取得驗證碼 -->
+    <div id="step1">
+      <label for="userID">員工 ID</label>
+      <input type="text" id="userID" placeholder="輸入員工編號" />
+      <button id="requestCodeBtn">寄送驗證碼</button>
+      <p id="step1Msg"></p>
+      <button type="button" id="backHome" onclick="window.location.href='login.html'" class="btn btn-secondary">返回登入</button>
+    </div>
+    
+    <!-- Step 2 輸入驗證碼與新密碼 -->
+    <div id="step2" class="hidden">
+      <label for="code">驗證碼</label>
+      <input type="text" id="code" placeholder="輸入驗證碼" />
+      <label for="newPwd">新密碼</label>
+      <input type="password" id="newPwd" placeholder="輸入新密碼" />
+      <button id="verifyBtn">確認並重設密碼</button>
+      <p id="step2Msg"></p>
+    </div>
+  </div>
+
+  <script src="MemberPage/JS/forgot.js"></script>
+</body>
+</html>
