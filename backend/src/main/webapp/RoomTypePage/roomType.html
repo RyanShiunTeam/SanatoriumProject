@@ -1,0 +1,323 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8">
+  <title>養老院房型查詢</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  <style>
+    body {
+      background-color: #fdf6ec;
+      font-family: "Microsoft JhengHei", sans-serif;
+      margin: 0;
+      padding: 0;
+    }
+    header {
+      background-color: #7caea3;
+      color: white;
+      padding: 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    header h1 {
+      margin: 0;
+      font-size: 28px;
+    }
+    .admin-btn {
+      background-color: #e76f51;
+      color: white;
+      border: none;
+      padding: 8px 15px;
+      border-radius: 5px;
+      cursor: pointer;
+      font-weight: bold;
+    }
+    .container {
+      padding: 30px;
+    }
+    .search-section {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 20px;
+      align-items: center;
+      margin-bottom: 40px;
+    }
+    .search-section form {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .search-section input,
+    .search-section select {
+      padding: 5px 10px;
+      border: 1px solid #aaa;
+      border-radius: 4px;
+    }
+    .search-section button {
+      background-color: #7caea3;
+      color: white;
+      border: none;
+      padding: 6px 12px;
+      border-radius: 4px;
+      cursor: pointer;
+      font-weight: bold;
+    }
+
+    .carousel-container {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 30px auto;
+      width: 90%;
+      position: relative;
+    }
+    .carousel-track {
+      display: flex;
+      overflow-x: auto;
+      scroll-behavior: smooth;
+      width: 80%;
+      gap: 20px;
+      scrollbar-width: none;
+    }
+    .carousel-track::-webkit-scrollbar {
+      display: none;
+    }
+    .card {
+      flex: 0 0 250px;
+      border: 1px solid #ccc;
+      border-radius: 15px;
+      padding: 10px;
+      background-color: #fff;
+      text-align: center;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+      cursor: pointer;
+      transition: transform 0.3s ease;
+      position: relative;
+      z-index: 0;
+      transform-origin: center center;
+    }
+    .card:hover {
+      transform: scale(1.1);
+      z-index: 10;
+      box-shadow: 0 8px 16px rgba(0,0,0,0.2);
+    }
+    .card img {
+      width: 100%;
+      height: 250px;
+      object-fit: cover;
+      border-radius: 5px;
+    }
+    .carousel-btn {
+      background: transparent;
+      border: none;
+      cursor: pointer;
+      font-size: 24px;
+      color: #333;
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      z-index: 10;
+      padding: 0;
+    }
+    .carousel-btn.left {
+      left: -40px;
+    }
+    .carousel-btn.right {
+      right: -40px;
+    }
+    .carousel-btn:hover {
+      background-color: #e76f51;
+    }
+
+    /* Modal 樣式 */
+    .modal {
+      display: none;
+      position: fixed;
+      z-index: 1000;
+      padding-top: 80px;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      overflow: auto;
+      background-color: rgba(0,0,0,0.6);
+    }
+    .modal-content {
+      background-color: #fff;
+      margin: auto;
+      padding: 20px;
+      border-radius: 10px;
+      width: 90%;
+      max-width: 600px;
+      text-align: center;
+      box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+      animation: fadeIn 0.3s ease-in-out;
+    }
+    .modal-content img {
+      max-width: 100%;
+      height: auto;
+      border-radius: 10px;
+      margin-bottom: 15px;
+    }
+    .modal-content p {
+      font-size: 18px;
+      color: #333;
+    }
+    .close {
+      color: #aaa;
+      float: right;
+      font-size: 28px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+    .close:hover {
+      color: #e76f51;
+    }
+    @keyframes fadeIn {
+      from {opacity: 0;}
+      to {opacity: 1;}
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <h1>養老院房型查詢</h1>
+  <form action="../GetAllRoom" method="get">
+    <button class="admin-btn">後台管理</button>
+  </form>
+</header>
+
+<div class="container">
+  <!-- 查詢表單 -->
+  <div class="search-section">
+    <form method="get" action="../SearchByPrice">
+      <label>依價格區間查詢：</label>
+      <select name="range">
+        <option value="">請選擇</option>
+        <option value="15000-20000">15,000 - 20,000</option>
+        <option value="20001-25000">20,001 - 25,000</option>
+        <option value="25001-30000">25,001 - 30,000</option>
+        <option value="30001-35000">30,001 - 35,000</option>
+        <option value="35001-38000">35,001 - 38,000</option>
+      </select>
+      <button type="submit">查詢</button>
+    </form>
+
+    <form method="get" action="../SearchByPeople">
+      <label>依人數查詢:</label>
+      <select name="capacity" required>
+        <option value="">請選擇</option>
+        <option value="1">1 人房</option>
+        <option value="2">2 人房</option>
+        <option value="4">4 人房</option>
+        <option value="6">6 人房</option>
+      </select>
+      <button type="submit">查詢</button>
+    </form>
+
+    <form method="get" action="../SearchByKeyword">
+      <label>關鍵字查詢:</label>
+      <input type="text" name="keyword" placeholder="EX:獨立衛浴">
+      <button type="submit">查詢</button>
+    </form>
+  </div>
+
+  <!-- 房型展示卡片 -->
+  <h2>熱門房型</h2>
+  <div class="carousel-container">
+    <button class="carousel-btn left" onclick="scrollCards(-1)">
+      <i class="fa-solid fa-angle-left"></i>
+    </button>
+    <div class="carousel-track" id="carouselTrack">
+      <div class="card" data-image="./RoomImg/room1.png" data-description="單人房｜提供基本照護設施，適合偏好安靜環境的長者">
+        <img src="./RoomImg/room1.png" alt="房型1">
+        <p>單人房｜提供基本照護設施，適合偏好安靜環境的長者</p>
+      </div>
+      <div class="card" data-image="./RoomImg/room2.png" data-description="雙人房｜二人共住，具備簡單隱私設計，適合陪伴與交流">
+        <img src="./RoomImg/room2.png" alt="房型2">
+        <p>雙人房｜二人共住，具備簡單隱私設計，適合陪伴與交流</p>
+      </div>
+      <div class="card" data-image="./RoomImg/room3.png" data-description="四人房｜空間寬敞，適合社交與團體生活">
+        <img src="./RoomImg/room3.png" alt="房型3">
+        <p>四人房｜空間寬敞，適合社交與團體生活</p>
+      </div>
+      <div class="card" data-image="./RoomImg/room4.png" data-description="六人房｜多人共住，注重照護便利與互動，經濟實惠">
+        <img src="./RoomImg/room4.png" alt="房型4">
+        <p>六人房｜多人共住，注重照護便利與互動，經濟實惠</p>
+      </div>
+      <div class="card" data-image="./RoomImg/room5.png" data-description="無障礙單人房｜為行動不便者設計，無門檻、寬門、無障礙衛浴，提升生活便利與安全">
+        <img src="./RoomImg/room5.png" alt="房型5">
+        <p>無障礙單人房｜為行動不便者設計，無門檻、寬門、無障礙衛浴，提升生活便利與安全</p>
+      </div>
+    </div>
+    <button class="carousel-btn right" onclick="scrollCards(1)">
+      <i class="fa-solid fa-angle-right"></i>
+    </button>
+  </div>
+</div>
+
+<!-- Modal 彈窗 -->
+<div id="cardModal" class="modal">
+  <div class="modal-content">
+    <span class="close">&times;</span>
+    <img id="modalImage" src="" alt="放大圖">
+    <p id="modalText"></p>
+  </div>
+</div>
+
+<script>
+  function scrollCards(direction) {
+    const track = document.getElementById('carouselTrack');
+    const card = track.querySelector('.card');
+    if (!card) return;
+    const cardWidth = card.offsetWidth + 20;
+    track.scrollBy({ left: direction * cardWidth, behavior: 'smooth' });
+  }
+
+  $(document).ready(function () {
+    const $track = $('#carouselTrack');
+    const $cards = $track.find('.card');
+    const track = $track[0];
+    const cardWidth = $cards[0].getBoundingClientRect().width + 20;
+    const visibleWidth = track.clientWidth;
+    const maxIndex = Math.floor(track.scrollWidth / cardWidth) - Math.floor(visibleWidth / cardWidth);
+    let index = 0;
+
+    function autoScrollRight() {
+      index++;
+      if (index > maxIndex) index = 0;
+      $track.stop().animate({ scrollLeft: index * cardWidth }, 500);
+    }
+
+    setInterval(autoScrollRight, 5000);
+  });
+
+  // 點卡片開啟 Modal
+  document.querySelectorAll('.card').forEach(card => {
+    card.addEventListener('click', () => {
+      const imgSrc = card.getAttribute('data-image');
+      const desc = card.getAttribute('data-description');
+      document.getElementById('modalImage').src = imgSrc;
+      document.getElementById('modalText').textContent = desc;
+      document.getElementById('cardModal').style.display = 'block';
+    });
+  });
+
+  document.querySelector('.close').addEventListener('click', () => {
+    document.getElementById('cardModal').style.display = 'none';
+  });
+
+  window.addEventListener('click', (e) => {
+    if (e.target.id === 'cardModal') {
+      document.getElementById('cardModal').style.display = 'none';
+    }
+  });
+</script>
+
+</body>
+</html>
+
+
+
