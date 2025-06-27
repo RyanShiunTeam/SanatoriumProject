@@ -1,0 +1,11 @@
+bus_id,car_dealership,bus_brand,bus_model,seat_capacity,wheelchair_capacity,license_plate
+1,Taipei Motors,Toyota,Coaster,20,2,AB-1234
+2,Kaohsiung Auto,Ford,Transit,18,3,AC-2345
+3,Taichung Wheels,Mercedes,Sprinter,15,4,AD-3456
+4,Tainan Vehicle,Nissan,Civilian,12,1,AE-4567
+5,Hualien Mobility,Volkswagen,Crafter,16,2,AF-5678
+6,Taoyuan Shuttle,Honda,StepWGN,14,2,AG-6789
+7,Miaoli Transit,Hyundai,County,17,3,AH-7890
+8,Yilan Vans,Mitsubishi,Rosa,13,1,AI-8901
+9,Hsinchu Car,Isuzu,Journey,19,3,AJ-9012
+10,Penghu Transport,Chevrolet,Express,11,2,AK-0123
