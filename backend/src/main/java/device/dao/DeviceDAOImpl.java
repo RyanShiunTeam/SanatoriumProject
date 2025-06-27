@@ -6,7 +6,8 @@ import java.util.List;
 
 import device.bean.Device;
 import device.bean.DeviceCategory;
-import device.util.DbUtil;
+
+import utils.HikariCputil;
 
 public class DeviceDAOImpl implements DeviceDAO {
 
@@ -21,7 +22,7 @@ public class DeviceDAOImpl implements DeviceDAO {
     public Device findById(int id) throws Exception {
         String sql = "SELECT d.*, c.id AS c_id, c.name AS c_name, c.category_id AS c_category_id " +
                      "FROM Device d LEFT JOIN DeviceCategory c ON d.category_id = c.id WHERE d.id = ?";
-        try (Connection conn = DbUtil.getConnection();
+        try (Connection conn = HikariCputil.getDataSource().getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setInt(1, id);
             try (ResultSet rs = ps.executeQuery()) {
@@ -38,7 +39,7 @@ public class DeviceDAOImpl implements DeviceDAO {
     public void insert(Device device) throws Exception {
         String sql = "INSERT INTO Device(name, sku, unitPrice, inventory, description, image, isOnline, category_id) " +
                      "VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
-        try (Connection conn = DbUtil.getConnection();
+        try (Connection conn = HikariCputil.getDataSource().getConnection();
              PreparedStatement ps = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
             ps.setString(1, device.getName());
             ps.setString(2, device.getSku());
@@ -63,7 +64,7 @@ public class DeviceDAOImpl implements DeviceDAO {
     @Override
     public void update(Device device) throws Exception {
         String sql = "UPDATE Device SET name = ?, sku = ?, unitPrice = ?, inventory = ?, description = ?, image = ?, isOnline = ?, category_id = ? WHERE id = ?";
-        try (Connection conn = DbUtil.getConnection();
+        try (Connection conn = HikariCputil.getDataSource().getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setString(1, device.getName());
             ps.setString(2, device.getSku());
@@ -83,7 +84,7 @@ public class DeviceDAOImpl implements DeviceDAO {
     @Override
     public boolean delete(int id) throws Exception {
         String sql = "DELETE FROM Device WHERE id = ?";
-        try (Connection conn = DbUtil.getConnection();
+        try (Connection conn = HikariCputil.getDataSource().getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setInt(1, id);
             return ps.executeUpdate() > 0;
@@ -94,7 +95,7 @@ public class DeviceDAOImpl implements DeviceDAO {
     @Override
     public boolean existsById(int id) throws Exception {
         String sql = "SELECT 1 FROM Device WHERE id = ?";
-        try (Connection conn = DbUtil.getConnection();
+        try (Connection conn = HikariCputil.getDataSource().getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setInt(1, id);
             try (ResultSet rs = ps.executeQuery()) {
@@ -110,7 +111,7 @@ public class DeviceDAOImpl implements DeviceDAO {
         String sql = "SELECT d.*, c.id AS c_id, c.name AS c_name, c.category_id AS c_category_id " +
                      "FROM Device d LEFT JOIN DeviceCategory c ON d.category_id = c.id " +
                      "WHERE d.name LIKE ? ORDER BY d.name";
-        try (Connection conn = DbUtil.getConnection();
+        try (Connection conn = HikariCputil.getDataSource().getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setString(1, "%" + namePattern + "%");
             try (ResultSet rs = ps.executeQuery()) {
@@ -126,7 +127,7 @@ public class DeviceDAOImpl implements DeviceDAO {
     @Override
     public int count() throws Exception {
         String sql = "SELECT COUNT(*) FROM Device";
-        try (Connection conn = DbUtil.getConnection();
+        try (Connection conn = HikariCputil.getDataSource().getConnection();
              PreparedStatement ps = conn.prepareStatement(sql);
              ResultSet rs = ps.executeQuery()) {
             return rs.next() ? rs.getInt(1) : 0;
@@ -140,7 +141,7 @@ public class DeviceDAOImpl implements DeviceDAO {
         String sql = "SELECT d.*, c.id AS c_id, c.name AS c_name, c.category_id AS c_category_id " +
                      "FROM Device d LEFT JOIN DeviceCategory c ON d.category_id = c.id " +
                      "WHERE d.category_id = ? ORDER BY d.name";
-        try (Connection conn = DbUtil.getConnection();
+        try (Connection conn = HikariCputil.getDataSource().getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setInt(1, categoryId);
             try (ResultSet rs = ps.executeQuery()) {
@@ -175,7 +176,7 @@ public class DeviceDAOImpl implements DeviceDAO {
                      "FROM Device d LEFT JOIN DeviceCategory c ON d.category_id = c.id " +
                      "ORDER BY d." + safeSort + " " + safeOrder;
 
-        try (Connection conn = DbUtil.getConnection();
+        try (Connection conn = HikariCputil.getDataSource().getConnection();
              PreparedStatement ps = conn.prepareStatement(sql);
              ResultSet rs = ps.executeQuery()) {
 
@@ -194,7 +195,7 @@ public class DeviceDAOImpl implements DeviceDAO {
                      "FROM Device d LEFT JOIN DeviceCategory c ON d.category_id = c.id " +
                      "ORDER BY d.name OFFSET ? ROWS FETCH NEXT ? ROWS ONLY";
 
-        try (Connection conn = DbUtil.getConnection();
+        try (Connection conn = HikariCputil.getDataSource().getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
 
             ps.setInt(1, offset); // 從第幾筆開始
@@ -234,7 +235,7 @@ public class DeviceDAOImpl implements DeviceDAO {
                      "ORDER BY d." + safeSort + " " + safeOrder +
                      " OFFSET ? ROWS FETCH NEXT ? ROWS ONLY";
 
-        try (Connection conn = DbUtil.getConnection();
+        try (Connection conn = HikariCputil.getDataSource().getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
 
             ps.setInt(1, offset);

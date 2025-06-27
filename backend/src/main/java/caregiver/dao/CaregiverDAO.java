@@ -11,7 +11,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import caregiver.bean.Caregiver;
-import caregiver.utils.HikariCputil;
+import utils.HikariCputil;
 
 public class CaregiverDAO {
 

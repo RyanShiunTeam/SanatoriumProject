@@ -35,7 +35,8 @@ public class DeviceAddServlet extends HttpServlet {
             String description = request.getParameter("description");
             String isOnlineStr = request.getParameter("isOnline");
             String categoryIdStr = request.getParameter("categoryId");
-
+            
+            System.out.println("準備新增: " + name);
          // 驗證必填欄位是否完整
             if (name == null || name.isBlank() || sku == null || sku.isBlank() ||
                 unitPriceStr == null || unitPriceStr.isBlank() || inventoryStr == null || inventoryStr.isBlank() || categoryIdStr == null || categoryIdStr.isBlank()) {

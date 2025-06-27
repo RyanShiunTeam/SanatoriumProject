@@ -5,7 +5,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import device.bean.DeviceCategory;
-import device.util.DbUtil;
+
+import utils.HikariCputil;
 
 public class DeviceCategoryDAOImpl implements DeviceCategoryDAO {
 
@@ -16,7 +17,7 @@ public class DeviceCategoryDAOImpl implements DeviceCategoryDAO {
         String sql = "SELECT * FROM DeviceCategory ORDER BY category_id";
         
      // 使用 try-with-resources 自動關閉連線與資源
-        try (Connection conn = DbUtil.getConnection();
+        try (Connection conn = HikariCputil.getDataSource().getConnection();
              PreparedStatement ps = conn.prepareStatement(sql);
              ResultSet rs = ps.executeQuery()) {
      // 將每筆查詢結果封裝成 DeviceCategory 物件並加入 list
@@ -36,7 +37,7 @@ public class DeviceCategoryDAOImpl implements DeviceCategoryDAO {
     @Override
     public DeviceCategory findById(int id) throws Exception {
         String sql = "SELECT * FROM DeviceCategory WHERE id = ?";
-        try (Connection conn = DbUtil.getConnection();
+        try (Connection conn = HikariCputil.getDataSource().getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
 
             ps.setInt(1, id);
@@ -57,7 +58,7 @@ public class DeviceCategoryDAOImpl implements DeviceCategoryDAO {
     @Override
     public void insert(DeviceCategory cat) throws Exception {
         String sql = "INSERT INTO DeviceCategory(name, category_id) VALUES (?, ?)";
-        try (Connection conn = DbUtil.getConnection();
+        try (Connection conn = HikariCputil.getDataSource().getConnection();
              PreparedStatement ps = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
 
             ps.setString(1, cat.getName());
@@ -77,7 +78,7 @@ public class DeviceCategoryDAOImpl implements DeviceCategoryDAO {
     @Override
     public void update(DeviceCategory cat) throws Exception {
         String sql = "UPDATE DeviceCategory SET name = ?, category_id = ? WHERE id = ?";
-        try (Connection conn = DbUtil.getConnection();
+        try (Connection conn = HikariCputil.getDataSource().getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
 
             ps.setString(1, cat.getName());
@@ -91,7 +92,7 @@ public class DeviceCategoryDAOImpl implements DeviceCategoryDAO {
     @Override
     public boolean delete(int id) throws Exception {
         String sql = "DELETE FROM DeviceCategory WHERE id = ?";
-        try (Connection conn = DbUtil.getConnection();
+        try (Connection conn = HikariCputil.getDataSource().getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
 
             ps.setInt(1, id);
@@ -104,7 +105,7 @@ public class DeviceCategoryDAOImpl implements DeviceCategoryDAO {
     @Override
     public boolean existsById(int id) throws Exception {
         String sql = "SELECT 1 FROM DeviceCategory WHERE id = ?";
-        try (Connection conn = DbUtil.getConnection();
+        try (Connection conn = HikariCputil.getDataSource().getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
 
             ps.setInt(1, id);
@@ -119,7 +120,7 @@ public class DeviceCategoryDAOImpl implements DeviceCategoryDAO {
     public List<DeviceCategory> findByNameLike(String namePattern) throws Exception {
         List<DeviceCategory> list = new ArrayList<>();
         String sql = "SELECT * FROM DeviceCategory WHERE name LIKE ? ORDER BY category_id";
-        try (Connection conn = DbUtil.getConnection();
+        try (Connection conn = HikariCputil.getDataSource().getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
 
             ps.setString(1, "%" + namePattern + "%");
@@ -140,7 +141,7 @@ public class DeviceCategoryDAOImpl implements DeviceCategoryDAO {
     @Override
     public int count() throws Exception {
         String sql = "SELECT COUNT(*) FROM DeviceCategory";
-        try (Connection conn = DbUtil.getConnection();
+        try (Connection conn = HikariCputil.getDataSource().getConnection();
              PreparedStatement ps = conn.prepareStatement(sql);
              ResultSet rs = ps.executeQuery()) {
             if (rs.next()) {

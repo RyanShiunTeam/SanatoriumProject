@@ -72,7 +72,7 @@ public class DeviceUpdateServlet extends HttpServlet {
             Device device = deviceService.getDeviceById(id);
             if (device == null) {
                 request.setAttribute("errorMessage", "找不到指定的設備");
-                request.getRequestDispatcher("/jsp/error.jsp").forward(request, response);
+                request.getRequestDispatcher("/DevicePage/error.jsp").forward(request, response);
                 return;
             }
 

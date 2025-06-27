@@ -12,6 +12,7 @@
 <br><br>
 <div style="text-align: center;">
     <a href="${pageContext.request.contextPath}/ListActivityServlet">查詢全部</a>
+    <a href="../backHome.html">返回首頁</a>
 </div>
 </body>
 </html>

@@ -80,7 +80,7 @@
         <a href="<%= request.getContextPath() %>/CategoryServlet" class="btn btn-secondary">📂 查詢全部分類</a>
         <a href="<%= request.getContextPath() %>/DeviceExportServlet" class="btn btn-info">⬇️ 匯出 CSV</a>
         <a href="<%= request.getContextPath() %>/DevicePage/importDevice.jsp" class="btn btn-warning">⬆️ 匯入 CSV</a>
-        <a href="<%= request.getContextPath() %>/LogoutServlet" class="btn btn-danger">🚪 登出</a>
+        <a href="<%= request.getContextPath() %>/backHome.html" class="btn btn-danger">🚪 回首頁</a>
     </div>
 
     <form method="get" action="<%= request.getContextPath() %>/DeviceServlet">
@@ -170,7 +170,7 @@
         }
         let form = document.createElement("form");
         form.method = "post";
-        form.action = "<%= request.getContextPath() %>/jsp/batchEdit.jsp";
+        form.action = "<%= request.getContextPath() %>/DevicePage/batchEdit.jsp";
         checkedBoxes.forEach(box => {
             let hidden = document.createElement("input");
             hidden.type = "hidden";

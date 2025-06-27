@@ -31,6 +31,7 @@ public class DeviceBatchUpdateServlet extends HttpServlet {
             String[] descriptions = request.getParameterValues("description");
             String[] images = request.getParameterValues("image");
             String[] isOnlines = request.getParameterValues("isOnline");
+            System.out.println(ids);
 
             // 檢查是否有任何選取的資料
             if (ids == null || ids.length == 0) {
