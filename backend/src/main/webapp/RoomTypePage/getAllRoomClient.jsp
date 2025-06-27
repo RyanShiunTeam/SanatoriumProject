@@ -120,7 +120,7 @@ img {
 			</tbody>
 		</table>
 
-		<a href="/Sanatorium-backend/RoomTypePage/roomType.html"
+		<a href="RoomTypePage/roomType.html"
 			class="btn btn-secondary mt-4">回查詢首頁</a> 
 	</div>
 	<!-- 圖片放大 Modal -->
