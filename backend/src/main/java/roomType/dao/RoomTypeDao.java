@@ -6,16 +6,8 @@ import java.util.List;
 
 import roomType.model.RoomType;
 
-import java.util.ArrayList;
-import java.util.List;
-
-
-
-import java.sql.*;
-import java.util.ArrayList;
-import java.util.List;
 import javax.sql.DataSource;
-import roomType.HikariCputil;
+import utils.HikariCputil;
 
 public class RoomTypeDao {
 

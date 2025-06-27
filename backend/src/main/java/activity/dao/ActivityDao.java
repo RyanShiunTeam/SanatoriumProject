@@ -5,7 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import activity.bean.Activity;
-import activity.util.HikariCputil;
+import utils.HikariCputil;
 
 public class ActivityDao {
 

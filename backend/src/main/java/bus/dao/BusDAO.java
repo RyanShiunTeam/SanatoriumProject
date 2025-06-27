@@ -11,14 +11,14 @@ import java.util.ArrayList;
 import java.util.List;
 import javax.sql.DataSource;
 import bus.bean.RehaBus;
-import bus.util.HikariUtil;
+import utils.HikariCputil;
 
 public class BusDAO {
 
 	private final DataSource datasource;
 
 	public BusDAO() throws SQLException {
-		this.datasource = HikariUtil.getDataSource();
+		this.datasource = HikariCputil.getDataSource();
 	}
 
 	// 新增復康巴士資料

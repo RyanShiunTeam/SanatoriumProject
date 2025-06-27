@@ -137,8 +137,8 @@ img {
 			</tbody>
 		</table>
 <div class="text-left my-5">
-		<a href="/backend/backHome.html" class="btn btn-secondary mt-4">回功能首頁</a>
-		<a href="/backend/RoomTypePage/roomType.html"
+
+		<a href="RoomTypePage/roomType.html"
 			class="btn btn-secondary mt-4">回查詢首頁</a> <br>
 			</div>
 		<button onclick="scrollToTop()" id="backToTopBtn" title="回到最上面">

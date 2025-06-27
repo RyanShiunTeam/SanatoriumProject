@@ -120,9 +120,8 @@ img {
 			</tbody>
 		</table>
 
-		<a href="/backend/RoomTypePage/roomType.html"
-			class="btn btn-secondary mt-4">回查詢首頁</a> <a
-			href="/backend/backHome.html" class="btn btn-secondary mt-4">回功能首頁</a>
+		<a href="/Sanatorium-backend/RoomTypePage/roomType.html"
+			class="btn btn-secondary mt-4">回查詢首頁</a> 
 	</div>
 	<!-- 圖片放大 Modal -->
 	<div id="imgModal" class="modal" style="display: none;">

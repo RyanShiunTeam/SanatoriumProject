@@ -16,6 +16,7 @@ import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.util.Arrays;
 import java.util.List;
+import java.util.ArrayList;
 import java.util.Properties;
 import java.util.Set;
 import java.util.UUID;
@@ -24,6 +25,7 @@ import java.util.UUID;
  * 照服員控制器基類
  * 通用版本 - 適用於不同開發者和部署環境
  * 支援多種專案結構和配置方式
+ * 整合混合式智能搜尋功能
  */
 @MultipartConfig(
     location = "",                        
@@ -49,7 +51,7 @@ public abstract class BaseCaregiverServlet extends HttpServlet {
     
     @Override
     public void init() throws ServletException {
-        System.out.println("=== BaseCaregiverServlet 初始化 (通用版本) ===");
+        System.out.println("=== BaseCaregiverServlet 初始化 (智能搜尋版本) ===");
         
         // 載入系統設定
         loadSystemConfig();
@@ -88,13 +90,18 @@ public abstract class BaseCaregiverServlet extends HttpServlet {
     }
     
     /**
-     * 設定預設配置
+     * 設定預設配置 - 只保留智能搜尋設定
      */
     private void setDefaultConfig() {
         systemConfig.setProperty("upload.max.file.size", "10485760"); // 10MB
         systemConfig.setProperty("upload.max.request.size", "15728640"); // 15MB
         systemConfig.setProperty("project.environment", "development");
         systemConfig.setProperty("upload.sync.source", "true");
+        
+        // 智能搜尋相關設定
+        systemConfig.setProperty("search.full.disk", "false");      // 預設不啟用完整磁碟搜尋
+        systemConfig.setProperty("search.timeout", "60");           // 搜尋超時時間（秒）
+        systemConfig.setProperty("search.max.depth", "4");          // 最大搜尋深度
     }
     
     /**
@@ -131,7 +138,7 @@ public abstract class BaseCaregiverServlet extends HttpServlet {
     }
     
     /**
-     * 智能偵測源碼目錄 - 通用版本
+     * 智能偵測源碼目錄 - 先找 SanatoriumProject 資料夾
      */
     private String detectSourceDirectory() {
         try {
@@ -150,75 +157,27 @@ public abstract class BaseCaregiverServlet extends HttpServlet {
             System.out.println("🔍 當前工作目錄: " + System.getProperty("user.dir"));
             System.out.println("🔍 用戶目錄: " + System.getProperty("user.home"));
             
-            // 多種可能的源碼路徑模式
-            List<String> possiblePatterns = Arrays.asList(
-                // Maven 標準結構
-                "src/main/webapp/CaregiverPage/uploads/photos",
-                "backend/src/main/webapp/CaregiverPage/uploads/photos",
-                // Eclipse 專案結構  
-                "WebContent/CaregiverPage/uploads/photos",
-                // 一般 Web 專案結構
-                "webapp/CaregiverPage/uploads/photos",
-                "web/CaregiverPage/uploads/photos"
-            );
+            // 第一階段：搜尋 SanatoriumProject 資料夾
+            System.out.println("🔍 階段1：搜尋 SanatoriumProject 資料夾...");
+            List<String> sanatoriumRoots = searchSanatoriumProject();
+            String foundPath = testSanatoriumPaths(sanatoriumRoots);
             
-            // 多種可能的根目錄
-            List<String> possibleRoots = new java.util.ArrayList<>(Arrays.asList(
-                // 當前工作目錄
-                System.getProperty("user.dir"),
-                // 您的具體路徑
-                "D:/teamspace/" + projectName,
-                "D:/teamspace/" + projectName + "/backend",
-                // 其他常見的 teamspace 位置
-                "C:/teamspace/" + projectName,
-                "C:/teamspace/" + projectName + "/backend",
-                // 標準工作空間位置
-                System.getProperty("user.home") + "/workspace/" + projectName,
-                System.getProperty("user.home") + "/eclipse-workspace/" + projectName,
-                System.getProperty("user.home") + "/Documents/workspace/" + projectName,
-                // Windows 常見位置
-                "C:/workspace/" + projectName,
-                "D:/workspace/" + projectName,
-                "C:/Users/" + System.getProperty("user.name") + "/workspace/" + projectName,
-                "D:/Users/" + System.getProperty("user.name") + "/workspace/" + projectName,
-                // 其他可能位置
-                "C:/projects/" + projectName,
-                "D:/projects/" + projectName,
-                "C:/dev/" + projectName,
-                "D:/dev/" + projectName,
-                // 特殊情況：如果專案在子目錄
-                System.getProperty("user.dir") + "/" + projectName,
-                System.getProperty("user.dir") + "/backend",
-                // 從部署路徑推算的 teamspace 路徑
-                "D:/teamspace/SanatoriumProject",
-                "D:/teamspace/SanatoriumProject/backend",
-                "C:/teamspace/SanatoriumProject",
-                "C:/teamspace/SanatoriumProject/backend"
-            ));
-            
-            // 如果是從部署路徑推算
-            if (deployPath != null) {
-                possibleRoots.addAll(extractPossibleRootsFromDeployPath(deployPath, projectName));
+            if (foundPath != null) {
+                return foundPath;
             }
             
-            System.out.println("🔍 開始測試 " + possibleRoots.size() + " 個根目錄 × " + possiblePatterns.size() + " 個模式");
-            
-            // 測試所有可能的組合
-            for (String root : possibleRoots) {
-                for (String pattern : possiblePatterns) {
-                    String testPath = root + "/" + pattern;
-                    testPath = testPath.replace("\\", "/").replaceAll("/+", "/");
-                    
-                    File testDir = new File(testPath);
-                    File parentDir = testDir.getParentFile(); // uploads 目錄
-                    
-                    System.out.println("🔍 測試路徑: " + testPath + " (父目錄存在: " + (parentDir != null && parentDir.exists()) + ")");
-                    
-                    if (parentDir != null && parentDir.exists()) {
-                        System.out.println("✅ 找到源碼路徑: " + testPath);
-                        return testPath;
-                    }
+            // 第二階段：完整磁碟搜尋（需要明確啟用）
+            String enableFullSearch = systemConfig.getProperty("search.full.disk", "false");
+            if ("true".equals(enableFullSearch)) {
+                System.out.println("🔍 階段2：完整磁碟搜尋 SanatoriumProject...");
+                List<String> fullSearchRoots = searchSanatoriumProjectFullDisk();
+                foundPath = testSanatoriumPaths(fullSearchRoots);
+                
+                if (foundPath != null) {
+                    return foundPath;
                 }
+            } else {
+                System.out.println("💡 提示：可在 config.properties 中設定 search.full.disk=true 啟用完整磁碟搜尋");
             }
             
         } catch (Exception e) {
@@ -231,46 +190,269 @@ public abstract class BaseCaregiverServlet extends HttpServlet {
     }
     
     /**
-     * 從部署路徑推算可能的源碼根目錄
+     * 搜尋 SanatoriumProject 資料夾 - 在常見位置
      */
-    private List<String> extractPossibleRootsFromDeployPath(String deployPath, String projectName) {
-        List<String> roots = new java.util.ArrayList<>();
+    private List<String> searchSanatoriumProject() {
+        List<String> sanatoriumRoots = new ArrayList<>();
         
-        try {
-            // 標準化路徑
-            deployPath = deployPath.replace("\\", "/");
+        // 定義常見的開發目錄名稱
+        List<String> commonDevDirs = Arrays.asList(
+            "workspace", "eclipse-workspace", "git", "projects", "dev", "code", 
+            "teamspace", "source", "src", "development", "work", "repo", "repositories"
+        );
+        
+        // 取得所有可用的磁碟機
+        File[] drives = File.listRoots();
+        
+        for (File drive : drives) {
+            String drivePath = drive.getAbsolutePath();
+            System.out.println("🔍 搜尋磁碟機: " + drivePath);
             
-            // Eclipse 環境 (.metadata\.plugins\org.eclipse.wst.server.core\tmp0\wtpwebapps)
-            if (deployPath.contains(".metadata")) {
-                int metadataIndex = deployPath.indexOf(".metadata");
-                String workspace = deployPath.substring(0, metadataIndex);
-                roots.add(workspace + projectName);
-                roots.add(workspace + projectName + "/backend");
+            // 直接在根目錄搜尋 SanatoriumProject
+            searchSanatoriumInDirectory(drivePath, sanatoriumRoots);
+            
+            // 在常見開發目錄中搜尋 SanatoriumProject
+            for (String devDirName : commonDevDirs) {
+                searchSanatoriumInDirectory(drivePath + devDirName, sanatoriumRoots);
             }
             
-            // Tomcat webapps 目錄
-            if (deployPath.contains("webapps")) {
-                int webappsIndex = deployPath.indexOf("webapps");
-                String tomcatPath = deployPath.substring(0, webappsIndex);
-                String parentPath = new File(tomcatPath).getParent();
-                if (parentPath != null) {
-                    roots.add(parentPath + "/" + projectName);
-                    roots.add(parentPath + "/workspace/" + projectName);
+            // 在用戶目錄下搜尋
+            String userHome = System.getProperty("user.home");
+            if (userHome != null && userHome.startsWith(drivePath.substring(0, 1))) {
+                // 用戶目錄根目錄
+                searchSanatoriumInDirectory(userHome, sanatoriumRoots);
+                
+                // 用戶目錄下的常見開發目錄
+                for (String devDirName : commonDevDirs) {
+                    searchSanatoriumInDirectory(userHome + "/" + devDirName, sanatoriumRoots);
+                    searchSanatoriumInDirectory(userHome + "/Documents/" + devDirName, sanatoriumRoots);
+                    searchSanatoriumInDirectory(userHome + "/Desktop/" + devDirName, sanatoriumRoots);
                 }
             }
             
-            // IntelliJ IDEA 環境
-            if (deployPath.contains("target")) {
-                int targetIndex = deployPath.indexOf("target");
-                String projectRoot = deployPath.substring(0, targetIndex);
-                roots.add(projectRoot);
+            // 檢查當前工作目錄
+            String userDir = System.getProperty("user.dir");
+            if (userDir != null && userDir.startsWith(drivePath.substring(0, 1))) {
+                searchSanatoriumInDirectory(userDir, sanatoriumRoots);
+                searchSanatoriumInDirectory(new File(userDir).getParent(), sanatoriumRoots);
             }
-            
-        } catch (Exception e) {
-            System.out.println("推算源碼路徑時發生錯誤: " + e.getMessage());
         }
         
-        return roots;
+        return sanatoriumRoots;
+    }
+    
+    /**
+     * 在指定目錄中搜尋 SanatoriumProject 資料夾
+     */
+    private void searchSanatoriumInDirectory(String dirPath, List<String> results) {
+        try {
+            if (dirPath == null) return;
+            
+            File dir = new File(dirPath);
+            if (!dir.exists() || !dir.isDirectory()) {
+                return;
+            }
+            
+            System.out.println("📁 檢查目錄: " + dirPath);
+            
+            // 直接尋找 SanatoriumProject 資料夾
+            File sanatoriumDir = new File(dir, "SanatoriumProject");
+            if (sanatoriumDir.exists() && sanatoriumDir.isDirectory()) {
+                results.add(sanatoriumDir.getAbsolutePath());
+                System.out.println("✅ 找到 SanatoriumProject: " + sanatoriumDir.getAbsolutePath());
+            }
+            
+            // 檢查子目錄（限制一層，避免太深）
+            File[] subDirs = dir.listFiles(File::isDirectory);
+            if (subDirs != null && subDirs.length < 50) { // 限制檢查的子目錄數量
+                for (File subDir : subDirs) {
+                    // 跳過明顯不相關的目錄
+                    String subDirName = subDir.getName();
+                    if (shouldSkipDirectory(subDirName)) {
+                        continue;
+                    }
+                    
+                    File subSanatoriumDir = new File(subDir, "SanatoriumProject");
+                    if (subSanatoriumDir.exists() && subSanatoriumDir.isDirectory()) {
+                        results.add(subSanatoriumDir.getAbsolutePath());
+                        System.out.println("✅ 找到 SanatoriumProject: " + subSanatoriumDir.getAbsolutePath());
+                    }
+                }
+            }
+            
+        } catch (SecurityException e) {
+            System.out.println("⚠️ 無權限存取目錄: " + dirPath);
+        } catch (Exception e) {
+            System.out.println("⚠️ 搜尋目錄時發生錯誤: " + dirPath + " - " + e.getMessage());
+        }
+    }
+    
+    /**
+     * 完整磁碟搜尋 SanatoriumProject（較慢，需要明確啟用）
+     */
+    private List<String> searchSanatoriumProjectFullDisk() {
+        List<String> sanatoriumRoots = new ArrayList<>();
+        
+        // 從設定檔讀取搜尋超時時間
+        int timeoutSeconds = getConfigValueAsInt("search.timeout", 60);
+        long startTime = System.currentTimeMillis();
+        
+        System.out.println("⚠️ 開始完整磁碟搜尋 SanatoriumProject，這可能需要較長時間（最多 " + timeoutSeconds + " 秒）...");
+        
+        // 取得所有可用的磁碟機
+        File[] drives = File.listRoots();
+        
+        for (File drive : drives) {
+            // 檢查是否超時
+            if ((System.currentTimeMillis() - startTime) / 1000 > timeoutSeconds) {
+                System.out.println("⏰ 搜尋超時，停止搜尋");
+                break;
+            }
+            
+            System.out.println("🔍 完整搜尋磁碟機: " + drive.getAbsolutePath());
+            
+            // 限制搜尋深度避免太慢
+            int maxDepth = getConfigValueAsInt("search.max.depth", 4);
+            List<String> foundInDrive = searchSanatoriumInDrive(drive, maxDepth, startTime, timeoutSeconds * 1000);
+            sanatoriumRoots.addAll(foundInDrive);
+        }
+        
+        return sanatoriumRoots;
+    }
+    
+    /**
+     * 在指定磁碟機中搜尋 SanatoriumProject 資料夾
+     */
+    private List<String> searchSanatoriumInDrive(File startDir, int maxDepth, long startTime, long timeoutMs) {
+        List<String> results = new ArrayList<>();
+        
+        // 檢查超時
+        if ((System.currentTimeMillis() - startTime) > timeoutMs) {
+            return results;
+        }
+        
+        if (maxDepth <= 0 || !startDir.exists() || !startDir.isDirectory()) {
+            return results;
+        }
+        
+        try {
+            File[] children = startDir.listFiles();
+            if (children == null || children.length > 200) { // 避免檢查有太多檔案的目錄
+                return results;
+            }
+            
+            for (File child : children) {
+                // 檢查超時
+                if ((System.currentTimeMillis() - startTime) > timeoutMs) {
+                    break;
+                }
+                
+                if (!child.isDirectory()) continue;
+                
+                // 跳過系統目錄、隱藏目錄和明顯不相關的目錄
+                String name = child.getName();
+                if (shouldSkipDirectory(name)) {
+                    continue;
+                }
+                
+                // 檢查是否是 SanatoriumProject 資料夾
+                if (name.equals("SanatoriumProject")) {
+                    results.add(child.getAbsolutePath());
+                    System.out.println("✅ 完整搜尋找到 SanatoriumProject: " + child.getAbsolutePath());
+                }
+                
+                // 繼續往下搜尋（但要限制深度）
+                if (maxDepth > 1) {
+                    results.addAll(searchSanatoriumInDrive(child, maxDepth - 1, startTime, timeoutMs));
+                }
+            }
+            
+        } catch (SecurityException e) {
+            // 忽略沒有權限存取的目錄
+        } catch (Exception e) {
+            // 忽略其他錯誤
+        }
+        
+        return results;
+    }
+    
+    /**
+     * 測試 SanatoriumProject 路徑與專案結構的組合
+     */
+    private String testSanatoriumPaths(List<String> sanatoriumRoots) {
+        if (sanatoriumRoots.isEmpty()) {
+            System.out.println("📭 沒有找到 SanatoriumProject 資料夾");
+            return null;
+        }
+        
+        // 定義 SanatoriumProject 內部可能的專案結構
+        List<String> possiblePatterns = Arrays.asList(
+            // 直接在根目錄下
+            "CaregiverPage/uploads/photos",
+            // Maven 標準結構
+            "src/main/webapp/CaregiverPage/uploads/photos",
+            "backend/src/main/webapp/CaregiverPage/uploads/photos",
+            // Eclipse 專案結構  
+            "WebContent/CaregiverPage/uploads/photos",
+            // 一般 Web 專案結構
+            "webapp/CaregiverPage/uploads/photos",
+            "web/CaregiverPage/uploads/photos"
+        );
+        
+        System.out.println("🔍 SanatoriumProject搜尋：測試 " + sanatoriumRoots.size() + " 個資料夾 × " + possiblePatterns.size() + " 個模式");
+        
+        // 測試所有可能的組合
+        for (String sanatoriumRoot : sanatoriumRoots) {
+            for (String pattern : possiblePatterns) {
+                String testPath = sanatoriumRoot + "/" + pattern;
+                testPath = testPath.replace("\\", "/").replaceAll("/+", "/");
+                
+                File testDir = new File(testPath);
+                File parentDir = testDir.getParentFile(); // uploads 目錄
+                
+                System.out.println("🔍 測試路徑: " + testPath + " (父目錄存在: " + (parentDir != null && parentDir.exists()) + ")");
+                
+                if (parentDir != null && parentDir.exists()) {
+                    System.out.println("✅ SanatoriumProject 找到源碼路徑: " + testPath);
+                    return testPath;
+                }
+            }
+        }
+        
+        System.out.println("❌ SanatoriumProject：未找到有效的專案結構");
+        return null;
+    }
+    
+    /**
+     * 判斷是否應該跳過某個目錄
+     */
+    private boolean shouldSkipDirectory(String dirName) {
+        // 系統目錄
+        if (dirName.equals("System Volume Information") ||
+            dirName.equals("$RECYCLE.BIN") ||
+            dirName.equals("Windows") ||
+            dirName.equals("Program Files") ||
+            dirName.equals("Program Files (x86)") ||
+            dirName.equals("ProgramData") ||
+            dirName.equals("Recovery")) {
+            return true;
+        }
+        
+        // 隱藏目錄和特殊目錄
+        if (dirName.startsWith(".") ||
+            dirName.startsWith("$") ||
+            dirName.equals("node_modules") ||
+            dirName.equals("target") ||
+            dirName.equals("build") ||
+            dirName.equals("dist") ||
+            dirName.equals("bin") ||
+            dirName.equals("obj") ||
+            dirName.equals("Debug") ||
+            dirName.equals("Release")) {
+            return true;
+        }
+        
+        return false;
     }
     
     /**
@@ -308,7 +490,7 @@ public abstract class BaseCaregiverServlet extends HttpServlet {
      * 處理照片上傳
      */
     protected String handlePhotoUpload(HttpServletRequest request) throws IOException, ServletException {
-        System.out.println("=== 開始處理照片上傳 (通用版本) ===");
+        System.out.println("=== 開始處理照片上傳 (智能搜尋版本) ===");
         
         try {
             Part photoPart = request.getPart("photo");
@@ -579,7 +761,7 @@ public abstract class BaseCaregiverServlet extends HttpServlet {
     
     @Override
     public void destroy() {
-        System.out.println("BaseCaregiverServlet 已銷毀");
+        System.out.println("BaseCaregiverServlet 已銷毀 (智能搜尋版本)");
         super.destroy();
     }
 }

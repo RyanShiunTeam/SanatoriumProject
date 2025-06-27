@@ -85,22 +85,22 @@
         <tr>
             <td>
                 <%= device.getId() %>
-                <input type="hidden" name="id[]" value="<%= device.getId() %>">
+                <input type="hidden" name="id" value="<%= device.getId() %>">
             </td>
-            <td><input type="text" name="name[]" value="<%= device.getName() %>"></td>
-            <td><input type="text" name="sku[]" value="<%= device.getSku() %>"></td>
-            <td><input type="number" step="0.01" name="unitPrice[]" value="<%= device.getUnitPrice() %>"></td>
-            <td><input type="number" name="inventory[]" value="<%= device.getInventory() %>"></td>
-            <td><input type="text" name="description[]" value="<%= device.getDescription() != null ? device.getDescription() : "" %>"></td>
-            <td><input type="text" name="image[]" value="<%= device.getImage() != null ? device.getImage() : "" %>"></td>
+            <td><input type="text" name="name" value="<%= device.getName() %>"></td>
+            <td><input type="text" name="sku" value="<%= device.getSku() %>"></td>
+            <td><input type="number" step="0.01" name="unitPrice" value="<%= device.getUnitPrice() %>"></td>
+            <td><input type="number" name="inventory" value="<%= device.getInventory() %>"></td>
+            <td><input type="text" name="description" value="<%= device.getDescription() != null ? device.getDescription() : "" %>"></td>
+            <td><input type="text" name="image" value="<%= device.getImage() != null ? device.getImage() : "" %>"></td>
             <td>
-                <select name="isOnline[]">
+                <select name="isOnline">
                     <option value="true" <%= device.isOnline() ? "selected" : "" %>>是</option>
                     <option value="false" <%= !device.isOnline() ? "selected" : "" %>>否</option>
                 </select>
             </td>
             <td>
-                <select name="categoryId[]">
+                <select name="categoryId">
                     <%
                         for (DeviceCategory category : categoryList) {
                             boolean selected = device.getCategory() != null && category.getId() == device.getCategory().getId();

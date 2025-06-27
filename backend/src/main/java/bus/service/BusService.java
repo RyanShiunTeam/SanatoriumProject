@@ -5,7 +5,7 @@ import java.sql.SQLException;
 import java.util.List;
 import bus.bean.RehaBus;
 import bus.dao.BusDAO;
-import bus.util.HikariUtil;
+import utils.HikariCputil;
 
 public class BusService {
 
@@ -13,7 +13,7 @@ public class BusService {
 	private BusDAO busDao;
 
 	public BusService() throws SQLException {
-		HikariUtil.getDataSource();
+		HikariCputil.getDataSource();
 		this.busDao = new BusDAO();
 
 	}

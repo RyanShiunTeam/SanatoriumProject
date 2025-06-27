@@ -89,6 +89,6 @@
 </table>
 
  <!--  返回輔具清單頁 -->
-<a href="<%= request.getContextPath() %>/jsp/deviceList.jsp">← 回輔具清單</a>
+<a href="<%= request.getContextPath() %>/DevicePage/deviceList.jsp">← 回輔具清單</a>
 </body>
 </html>

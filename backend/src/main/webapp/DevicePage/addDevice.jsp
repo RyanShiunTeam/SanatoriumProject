@@ -18,7 +18,7 @@
         </div>
         <div class="card-body">
         <!-- 表單送出到 DeviceAddServlet -->
-            <form method="post" action="<%= request.getContextPath() %>/DeviceServlet?action" enctype="multipart/form-data">
+            <form method="post" action="<%= request.getContextPath() %>/DeviceAddServlet?action" enctype="multipart/form-data">
                 <div class="mb-3">
                     <label for="name" class="form-label">名稱</label>
                     <input type="text" class="form-control" id="name" name="name" required>
