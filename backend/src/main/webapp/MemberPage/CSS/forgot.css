@@ -1,0 +1,65 @@
+body {
+  background: #f5f6fa;
+  font-family: 'Segoe UI', '微軟正黑體', Arial, sans-serif;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  margin: 0;
+}
+.container {
+  background: #fff;
+  padding: 32px 40px;
+  border-radius: 12px;
+  box-shadow: 0 4px 24px rgba(0,0,0,0.08);
+  min-width: 320px;
+}
+h2 {
+  text-align: center;
+  margin-bottom: 24px;
+  color: #333;
+}
+label {
+  display: block;
+  margin-bottom: 8px;
+  color: #555;
+  font-size: 15px;
+}
+input[type="text"], input[type="password"] {
+  width: 100%;
+  padding: 10px;
+  margin-top: 6px;
+  margin-bottom: 16px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  font-size: 16px;
+  box-sizing: border-box;
+  transition: border 0.2s;
+}
+input[type="text"]:focus, input[type="password"]:focus {
+  border: 1.5px solid #4a90e2;
+  outline: none;
+}
+button {
+  width: 100%;
+  padding: 12px 0;
+  background: #4a90e2;
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  font-size: 16px;
+  cursor: pointer;
+  margin-top: 8px;
+  transition: background 0.2s;
+}
+button:hover {
+  background: #357abd;
+}
+.hidden {
+  display: none;
+}
+#step1Msg, #step2Msg {
+  text-align: center;
+  margin-top: 8px;
+  color: #e74c3c;
+  font-

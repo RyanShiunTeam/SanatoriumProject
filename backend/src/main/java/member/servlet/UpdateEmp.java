@@ -1,6 +1,9 @@
 package member.servlet;
 
 import java.io.IOException;
+
+import com.google.gson.Gson;
+
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
@@ -15,29 +18,25 @@ public class UpdateEmp extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 
     private BackendUserService userService = new BackendUserService();
+    private Gson gson = new Gson();
     
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		request.setCharacterEncoding("UTF-8");
-	
-		// 前端接收員工資料
-		String userId = request.getParameter("userId");
-		String userName = request.getParameter("userName");
-		String passWord = request.getParameter("passWord");
-		String email = request.getParameter("email");
-		String role = request.getParameter("role");
-
-		int id = Integer.parseInt(userId);
-		BackendUser userinfo = new BackendUser();
-		userinfo.setUserId(id);
-		userinfo.setUserName(userName);
-		userinfo.setPassWord(passWord);
-		userinfo.setEmail(email);
-		userinfo.setRole(role);
-		boolean succeess = userService.updateBackendUser(userinfo);
+		response.setContentType("application/json;charset=UTF-8");
 		
-
-		request.setAttribute("success", succeess);
-		request.getRequestDispatcher("/MemberPage/updatePage.jsp").forward(request, response);
+		BackendUser updateEmp = gson.fromJson(request.getReader(), BackendUser.class);
+		
+		int userID = updateEmp.getuserID();
+		String userName = updateEmp.getUserName();
+		String emai = updateEmp.getEmail();
+		String role = updateEmp.getRole();
+		System.out.println("準備修改大名: " + userName);
+		Boolean success = userService.updateBackendUser(userID, userName, emai, role);
+		String result = success? "修改成功" : "修改失敗";
+		
+        
+        gson.toJson(result, response.getWriter());
+		
 
 	}
 
