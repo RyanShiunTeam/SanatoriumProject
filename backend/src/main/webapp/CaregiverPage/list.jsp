@@ -174,7 +174,6 @@
     <div class="container">
         <div class="header">
             <div class="header-left">
-                <a href="<%=request.getContextPath()%>/backHome.html" class="back-btn">← 返回主系統</a>
                 <h1>照服員管理系統</h1>
             </div>
             <a href="<%=request.getContextPath()%>/CaregiverPage/add.html" class="btn btn-success">新增照服員</a>

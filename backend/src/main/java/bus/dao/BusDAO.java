@@ -15,18 +15,14 @@ import utils.HikariCputil;
 
 public class BusDAO {
 
-	private final DataSource datasource;
 
-	public BusDAO() throws SQLException {
-		this.datasource = HikariCputil.getDataSource();
-	}
 
 	// 新增復康巴士資料
 	public boolean insertBus(RehaBus rehabus) throws SQLException {
 
 		String sql = "INSERT INTO rehabus(car_dealership, bus_brand, bus_model, seat_capacity, "
 				+ "wheelchair_capacity, license_plate) VALUES (?,?,?,?,?,?)";
-		try (Connection connection = datasource.getConnection();
+		try (Connection connection = HikariCputil.getDataSource().getConnection();
 				PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
 			preparedStatement.setString(1, rehabus.getCarDealership());
 			preparedStatement.setString(2, rehabus.getBusBrand());
@@ -42,7 +38,7 @@ public class BusDAO {
 	public boolean deleteBus(int busId) throws SQLException {
 
 		String sql = "DELETE FROM rehabus WHERE bus_id = ? ";
-		try (Connection connection = datasource.getConnection();
+		try (Connection connection = HikariCputil.getDataSource().getConnection();
 				PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
 			preparedStatement.setInt(1, busId);
 			return preparedStatement.executeUpdate() > 0;
@@ -50,27 +46,26 @@ public class BusDAO {
 	}
 
 	// 更新巴士資料
-	public boolean updateBus(RehaBus rehabus) throws SQLException {
+	public boolean updateBus(int busId, int seatCapacity, int wheelchairCapacity) throws SQLException {
 
 		String sql = "UPDATE rehabus SET seat_capacity =?, wheelchair_capacity =? WHERE bus_id=? ";
-		try (Connection connection = datasource.getConnection();
+		try (Connection connection = HikariCputil.getDataSource().getConnection();
 				PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
-			preparedStatement.setInt(1, rehabus.getSeatCapacity());
-			preparedStatement.setInt(2, rehabus.getWheelchairCapacity());
-			preparedStatement.setInt(3, rehabus.getBusId());
+			preparedStatement.setInt(1, seatCapacity);
+			preparedStatement.setInt(2, wheelchairCapacity);
+			preparedStatement.setInt(3, busId);
 			return preparedStatement.executeUpdate() > 0;
 		}
 	}
 
 	// 查詢巴士資料(模糊查詢)
-	public List<RehaBus> findByFilter(Integer minSeats, Integer maxSeats, Integer minWheels, Integer maxWheels,
-			Integer busId) throws SQLException {
+	public List<RehaBus> findByFilter(Integer minSeats, Integer maxSeats, Integer minWheels, Integer maxWheels) throws SQLException {
 
 		String sql = "SELECT * FROM rehabus WHERE (? IS NULL OR seat_capacity       BETWEEN ? AND ?) "
-				+ "                           AND (? IS NULL OR wheelchair_capacity BETWEEN ? AND ?) "
-				+ "                           AND (? IS NULL OR bus_id = ? ) " + "ORDER BY bus_id ";
+				+ "                           AND (? IS NULL OR wheelchair_capacity BETWEEN ? AND ?) ";
+
 		List<RehaBus> list = new ArrayList<>();
-		try (Connection connection = datasource.getConnection();
+		try (Connection connection = HikariCputil.getDataSource().getConnection();
 				PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
 
 			preparedStatement.setObject(1, minSeats);
@@ -81,8 +76,6 @@ public class BusDAO {
 			preparedStatement.setObject(5, minWheels);
 			preparedStatement.setObject(6, maxWheels);
 
-			preparedStatement.setObject(7, busId);
-			preparedStatement.setObject(8, busId);
 
 			try (ResultSet resultSet = preparedStatement.executeQuery()) {
 
@@ -106,7 +99,7 @@ public class BusDAO {
 	public RehaBus findById(int busId) throws SQLException {
 
 		String sql = "SELECT * FROM rehabus WHERE bus_id=?";
-		try (Connection connection = datasource.getConnection();
+		try (Connection connection = HikariCputil.getDataSource().getConnection();
 				PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
 			preparedStatement.setInt(1, busId);
 			try (ResultSet resultSet = preparedStatement.executeQuery()) {
@@ -133,7 +126,7 @@ public class BusDAO {
 		String sql = "SELECT bus_id, car_dealership, bus_brand, bus_model, seat_capacity,"
 				+ "wheelchair_capacity, license_plate FROM rehabus";
 		List<RehaBus> buslist = new ArrayList<>();
-		try (Connection connection = datasource.getConnection();
+		try (Connection connection = HikariCputil.getDataSource().getConnection();
 				PreparedStatement preparedStatement = connection.prepareStatement(sql);
 				ResultSet resultSet = preparedStatement.executeQuery()) {
 
@@ -157,7 +150,7 @@ public class BusDAO {
 		String sql = "INSERT INTO rehabus(car_dealership, bus_brand, bus_model, seat_capacity,"
 				+ "wheelchair_capacity, license_plate) VALUES (?,?,?,?,?,?)";
 
-		try (Connection connection = datasource.getConnection();
+		try (Connection connection = HikariCputil.getDataSource().getConnection();
 				PreparedStatement preparedStatement = connection.prepareStatement(sql);
 				BufferedReader bufferedReader = new BufferedReader(new FileReader(csvFilePath))) {
 

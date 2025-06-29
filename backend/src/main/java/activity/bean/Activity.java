@@ -12,7 +12,25 @@ public class Activity {
     private boolean status;
     private String description;
     
-    public int getId() {
+    
+    
+    
+    public Activity() {
+	}
+    
+	public Activity(String name, String category, int limit, String date, String time, String location,
+			String instructor, boolean status, String description) {
+		Name = name;
+		this.category = category;
+		Limit = limit;
+		Date = date;
+		Time = time;
+		this.location = location;
+		this.instructor = instructor;
+		this.status = status;
+		this.description = description;
+	}
+	public int getId() {
         return id;
     }
     public void setId(int id) {

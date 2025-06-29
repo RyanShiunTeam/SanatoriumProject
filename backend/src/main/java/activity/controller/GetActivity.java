@@ -15,36 +15,38 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
-@WebServlet("/QueryActivityServlet")
-public class QueryActivityServlet extends HttpServlet {
-	
-	
+@WebServlet("/GetActivity")
+public class GetActivity extends HttpServlet {
+
 	private static final long serialVersionUID = 1L;
-    private ActivityService activityService = new ActivityService();
+	private ActivityService activityService = new ActivityService();
     private Gson gson = new Gson();
 
-    
+   
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
 		request.setCharacterEncoding("UTF-8");
-		response.setContentType("application/json;charset=UTF-8");    	
+		response.setContentType("application/json;charset=UTF-8");
 		
-		List<Activity> activityList = activityService.getAllActivities();
+		Activity updateActivity = gson.fromJson(request.getReader(), Activity.class);
+
+		List<Activity> activity = activityService.getActivityByName(updateActivity.getName());
+
 		
 		Map<String, Object> result = new HashMap<>();
-		if (activityList != null && !activityList.isEmpty()) {
+		if (activity != null) {
+			System.out.println("找到活動資料: " + activity.size());
 			result.put("find", true);
-			result.put("activityList", activityList);
+			result.put("activity", activity);
 		} else {
 			result.put("find", false);
-			result.put("message", "沒有找到任何活動資料");
+			result.put("message", "沒有找到活動資料");
 		}
-
 		gson.toJson(result, response.getWriter());
     }
     
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
-    	doGet(request, response);
-    }
+			throws ServletException, IOException {
+		doGet(request, response);
+	}
 }

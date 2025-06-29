@@ -80,7 +80,6 @@
         <a href="<%= request.getContextPath() %>/CategoryServlet" class="btn btn-secondary">📂 查詢全部分類</a>
         <a href="<%= request.getContextPath() %>/DeviceExportServlet" class="btn btn-info">⬇️ 匯出 CSV</a>
         <a href="<%= request.getContextPath() %>/DevicePage/importDevice.jsp" class="btn btn-warning">⬆️ 匯入 CSV</a>
-        <a href="<%= request.getContextPath() %>/backHome.html" class="btn btn-danger">🚪 回首頁</a>
     </div>
 
     <form method="get" action="<%= request.getContextPath() %>/DeviceServlet">
