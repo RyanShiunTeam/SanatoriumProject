@@ -9,6 +9,7 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import utils.EmpService;
 
 import java.io.IOException;
 import java.util.List;
@@ -34,6 +35,11 @@ public class DeviceServlet extends HttpServlet {
                     for (String id : ids) {
                         deviceService.deleteDevice(id);
                     }
+                    // 記錄操作
+            		Integer loginUserId = (Integer) request.getSession().getAttribute("loginUserId");
+            		if (loginUserId != null) {
+            			new EmpService().record(loginUserId, "刪除一堆輔具", null);
+            		}
                 }
                 response.sendRedirect(request.getContextPath() + "/DevicePage/deviceList.jsp?status=deleted");
 
@@ -42,6 +48,11 @@ public class DeviceServlet extends HttpServlet {
                 String id = request.getParameter("id");
                 if (id != null && !id.isEmpty()) {
                     deviceService.deleteDevice(id);
+                    // 記錄操作
+            		Integer loginUserId = (Integer) request.getSession().getAttribute("loginUserId");
+            		if (loginUserId != null) {
+            			new EmpService().record(loginUserId, "刪除輔具", Integer.parseInt(id));
+            		}
                 }
                 response.sendRedirect(request.getContextPath() + "/DevicePage/deviceList.jsp?status=deleted");
 
