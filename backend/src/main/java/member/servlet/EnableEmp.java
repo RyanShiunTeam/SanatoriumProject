@@ -13,6 +13,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import member.bean.BackendUser;
 import member.service.BackendUserService;
+import utils.EmpService;
 
 
 @WebServlet("/EnableEmp")
@@ -30,11 +31,18 @@ public class EnableEmp extends HttpServlet {
 		int userID = enableEmp.getuserID();
 		
 		Map<String, Object> result = new HashMap<>();
-		if (userService.enableUser(userID)) {
+		
+		boolean success = userService.enableUser(userID);
+		if (success) {
 			result.put("success", true);
 		} else {
 			result.put("success", false);
 			result.put("message", "恢復失敗，請聯絡管理員 !");
+		}
+		
+		Integer loginUserId = (Integer) request.getSession().getAttribute("loginUserId");
+		if (success && loginUserId != null) {
+			new EmpService().record(loginUserId, "恢復員工權限", userID);
 		}
 		
         gson.toJson(result, response.getWriter());

@@ -5,6 +5,8 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import utils.EmpService;
+
 import java.io.IOException;
 
 /**
@@ -111,6 +113,12 @@ public class CaregiverDeleteServlet extends BaseCaregiverServlet {
                 if (caregiver.getPhoto() != null && !caregiver.getPhoto().trim().isEmpty()) {
                     deletePhotoFile(caregiver.getPhoto());
                 }
+                // 記錄操作
+        		Integer loginUserId = (Integer) request.getSession().getAttribute("loginUserId");
+        		if (success && loginUserId != null) {
+        			new EmpService().record(loginUserId, "刪除照服員", caregiver.getCaregiverId());
+        		}
+                
                 request.getSession().setAttribute("message", "照服員刪除成功！");
             } else {
                 request.getSession().setAttribute("error", "照服員刪除失敗！");

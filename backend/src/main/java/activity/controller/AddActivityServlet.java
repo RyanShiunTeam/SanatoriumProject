@@ -7,6 +7,7 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import utils.EmpService;
 
 import java.io.IOException;
 
@@ -41,6 +42,12 @@ public class AddActivityServlet extends HttpServlet {
 		
 		Boolean success = activityService.addActivity(activity);
 		String result = success ? "新增成功" : "新增失敗，請稍後再試";
+		
+		Integer loginUserId = (Integer) request.getSession().getAttribute("loginUserId");
+		if (success && loginUserId != null) {
+			new EmpService().record(loginUserId, "新增活動", null);
+		}
+		
 		gson.toJson(result, response.getWriter());
 
 	}

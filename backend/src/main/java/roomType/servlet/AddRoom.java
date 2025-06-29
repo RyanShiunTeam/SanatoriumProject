@@ -15,6 +15,7 @@ import member.bean.BackendUser;
 import member.service.BackendUserService;
 import roomType.model.RoomType;
 import roomType.service.RoomTypeService;
+import utils.EmpService;
 
 
 @WebServlet("/AddRoom")
@@ -75,6 +76,12 @@ public class AddRoom extends HttpServlet {
             // 新增
             RoomTypeService service = new RoomTypeService();
             service.addRoomType(room);
+            
+            // 記錄操作
+    		Integer loginUserId = (Integer) request.getSession().getAttribute("loginUserId");
+    		if (loginUserId != null) {
+    			new EmpService().record(loginUserId, "新增設施", null);
+    		}
 
             response.sendRedirect(request.getContextPath() + "/GetAllRoom");
 

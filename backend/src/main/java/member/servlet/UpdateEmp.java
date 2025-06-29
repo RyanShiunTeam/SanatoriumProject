@@ -11,6 +11,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import member.bean.BackendUser;
 import member.service.BackendUserService;
+import utils.EmpService;
 
 
 @WebServlet("/UpdateEmp")
@@ -30,14 +31,17 @@ public class UpdateEmp extends HttpServlet {
 		String userName = updateEmp.getUserName();
 		String emai = updateEmp.getEmail();
 		String role = updateEmp.getRole();
-		System.out.println("準備修改大名: " + userName);
 		Boolean success = userService.updateBackendUser(userID, userName, emai, role);
 		String result = success? "修改成功" : "修改失敗";
 		
         
+		Integer loginUserId = (Integer) request.getSession().getAttribute("loginUserId");
+		if (success && loginUserId != null) {
+			new EmpService().record(loginUserId, "修改員工資料", userID);
+		}
+		
         gson.toJson(result, response.getWriter());
 		
-
 	}
 
 

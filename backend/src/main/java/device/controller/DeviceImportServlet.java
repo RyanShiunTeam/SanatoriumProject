@@ -8,6 +8,7 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.MultipartConfig;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.*;
+import utils.EmpService;
 
 import java.io.*;
 import java.math.BigDecimal;
@@ -118,6 +119,12 @@ public class DeviceImportServlet extends HttpServlet {
             request.setAttribute("errorCount", errorCount);
             request.setAttribute("errorMessages", errorMessages);
             request.setAttribute("totalCount", lineNum - 1);
+            
+            // 記錄操作
+    		Integer loginUserId = (Integer) request.getSession().getAttribute("loginUserId");
+    		if (loginUserId != null) {
+    			new EmpService().record(loginUserId, "新增了一堆輔具", null);
+    		}
             request.getRequestDispatcher("/DevicePage/importResult.jsp").forward(request, response);
 
         } catch (Exception e) {

@@ -5,6 +5,7 @@ import activity.service.ActivityService;
 import jakarta.servlet.*;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.*;
+import utils.EmpService;
 
 import java.io.IOException;
 
@@ -26,6 +27,11 @@ public class UpdateActivityServlet extends HttpServlet {
 		Activity updateActivity = gson.fromJson(request.getReader(), Activity.class);
 		Boolean success = activityService.updateActivity(updateActivity);
 		String result = success ? "更新成功" : "更新失敗，請稍後再試";
+		
+		Integer loginUserId = (Integer) request.getSession().getAttribute("loginUserId");
+		if (success && loginUserId != null) {
+			new EmpService().record(loginUserId, "修改活動", updateActivity.getId());
+		}
 		
 		gson.toJson(result, response.getWriter());
     }

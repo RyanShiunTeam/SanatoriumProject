@@ -13,6 +13,7 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import utils.EmpService;
 
 //DAO(負責跟資料庫取資料)
 @WebServlet("/InsertBus")
@@ -39,6 +40,11 @@ public class InsertBus extends HttpServlet {
 		
 		Boolean success = busService.createBus(newBus);
 		String result = success ? "新增成功" : "新增失敗";
+		
+		Integer loginUserId = (Integer) request.getSession().getAttribute("loginUserId");
+		if (success && loginUserId != null) {
+			new EmpService().record(loginUserId, "新增巴士", null);
+		}
 		
 		gson.toJson(result, response.getWriter());
 

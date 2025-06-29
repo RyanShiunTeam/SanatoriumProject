@@ -8,6 +8,7 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.MultipartConfig;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.*;
+import utils.EmpService;
 
 import java.io.File;
 import java.io.IOException;
@@ -93,7 +94,12 @@ public class DeviceUpdateServlet extends HttpServlet {
             device.setCategory(category);
 
          // 執行更新
-            deviceService.updateDevice(device);
+            boolean success = deviceService.updateDevice(device);
+            // 記錄操作
+    		Integer loginUserId = (Integer) request.getSession().getAttribute("loginUserId");
+    		if (success && loginUserId != null) {
+    			new EmpService().record(loginUserId, "修改輔具", id);
+    		}
             // 更新成功後導向列表
             response.sendRedirect(request.getContextPath() + "/DeviceServlet?status=updated");
 

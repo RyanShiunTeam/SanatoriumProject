@@ -8,6 +8,7 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.MultipartConfig;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.*;
+import utils.EmpService;
 
 import java.io.File;
 import java.io.IOException;
@@ -88,7 +89,12 @@ public class DeviceAddServlet extends HttpServlet {
             device.setCategory(category); // 將分類一併設定
 
             // 新增設備資料
-            deviceService.addDevice(device);
+            boolean success = deviceService.addDevice(device);
+            // 記錄操作
+    		Integer loginUserId = (Integer) request.getSession().getAttribute("loginUserId");
+    		if (success && loginUserId != null) {
+    			new EmpService().record(loginUserId, "新增輔具", null);
+    		}
 
          // 新增成功後導向列表頁
             response.sendRedirect(request.getContextPath() + "/DeviceServlet?status=created");
