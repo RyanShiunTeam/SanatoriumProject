@@ -1,7 +1,7 @@
 package activity.controller;
 
 import activity.bean.Activity;
-import activity.dao.ActivityDao;
+import activity.service.ActivityService;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
@@ -10,43 +10,43 @@ import jakarta.servlet.http.HttpServletResponse;
 
 import java.io.IOException;
 
+import com.google.gson.Gson;
+
 @WebServlet("/AddActivityServlet")
 public class AddActivityServlet extends HttpServlet {
-    private final ActivityDao dao = new ActivityDao();
+	
+	private static final long serialVersionUID = 1L;
+	private ActivityService activityService = new ActivityService();
+    private Gson gson = new Gson();
 
-    @Override
+    
+	protected void doGet(HttpServletRequest request, HttpServletResponse response)
+			throws ServletException, IOException {
+		request.setCharacterEncoding("UTF-8");
+		response.setContentType("application/json;charset=UTF-8");
+		
+		Activity newActivity = gson.fromJson(request.getReader(), Activity.class);
+		
+		String name = newActivity.getName();
+		String category = newActivity.getCategory();
+		int limit = newActivity.getLimit();
+		String date = newActivity.getDate();
+		String time = newActivity.getTime();
+		String location = newActivity.getLocation();
+		String instructor = newActivity.getInstructor();
+		boolean status = true;
+		String description = newActivity.getDescription();
+		
+		Activity activity = new Activity(name, category, limit, date, time, location, instructor, status, description);
+		
+		Boolean success = activityService.addActivity(activity);
+		String result = success ? "新增成功" : "新增失敗，請稍後再試";
+		gson.toJson(result, response.getWriter());
+
+	}
+    
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-
-        request.setCharacterEncoding("UTF-8");
-
-        // 接收表單資料
-        Activity act = new Activity();
-        act.setName(request.getParameter("name"));
-        act.setCategory(request.getParameter("category"));
-        act.setLimit(Integer.parseInt(request.getParameter("limit")));
-        act.setDate(request.getParameter("date"));  // 你目前是用 String 儲存
-        act.setTime(request.getParameter("time"));
-        act.setLocation(request.getParameter("location"));
-        act.setInstructor(request.getParameter("instructor"));
-        act.setStatus(Boolean.parseBoolean(request.getParameter("status")));
-        act.setDescription(request.getParameter("description"));
-
-        int id = dao.insert(act);  // 回傳成功的ID
-
-        response.setContentType("text/html;charset=UTF-8");
-        if (id > 0) {
-            response.getWriter().println(
-                "<h2>新增成功！ID: " + id + "</h2>" +
-                "<a href='ActivityPage/addActivity.jsp'>再新增</a><br>" +
-                "<a href='" + request.getContextPath() + "/ListActivityServlet'>查看全部活動</a>"
-            );
-        } else {
-            response.getWriter().println(
-                "<h2>新增失敗</h2>" +
-                "<a href='ActivityPage/addActivity.jsp'>回上一頁</a>"
-            );
-        }
-       
+    	doGet(request, response);    
     }
 }

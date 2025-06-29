@@ -32,7 +32,7 @@ document.addEventListener("DOMContentLoaded", () => {
         // 將當前使用者資訊存在前端
         localStorage.setItem('loginUser', JSON.stringify(data.user));
         // 登入成功 → 導向後台首頁
-        window.location.href = `/${ctx}/backHome.html`;
+        window.location.href = `/${ctx}/homePage.html`;
       } else {
         msg.textContent = data.message;
       }

@@ -1,11 +1,17 @@
 package bus.servlet;
 
 import java.io.IOException;
-import java.sql.SQLException;
+
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+
+import com.google.gson.Gson;
 
 import bus.bean.RehaBus;
-import bus.dao.BusDAO;
+
+import bus.dao.BusSeatDTO;
+import bus.service.BusService;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
@@ -17,33 +23,34 @@ import jakarta.servlet.http.HttpServletResponse;
 public class FilterBus extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 
-	@Override
+	private BusService busService = new BusService();
+	private Gson gson = new Gson();
+	
 	protected void doGet(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
-
-		Integer minSeats = parseIntOrNull(request.getParameter("minSeats"));
-		Integer maxSeats = parseIntOrNull(request.getParameter("maxSeats"));
-		Integer minWheels = parseIntOrNull(request.getParameter("minWheels"));
-		Integer maxWheels = parseIntOrNull(request.getParameter("maxWheels"));
-		Integer busId = parseIntOrNull(request.getParameter("busId"));
-
-		try {
-
-			BusDAO dao = new BusDAO();
-			List<RehaBus> list = dao.findByFilter(minSeats, maxSeats, minWheels, maxWheels, busId);
-
-			 request.setAttribute("bus", list);
-	            request.getRequestDispatcher("/BusPage/getAllBus.jsp")
-	                   .forward(request, response);
-
-	        } catch (SQLException e) {
-	            e.printStackTrace();
-	            response.sendError(
-	                HttpServletResponse.SC_INTERNAL_SERVER_ERROR,
-	                "執行模糊查詢失敗"
-	            );
-	        }
-	    }
+		request.setCharacterEncoding("UTF-8");
+		response.setContentType("application/json;charset=UTF-8");
+		
+		// 取得所有巴士資料
+		BusSeatDTO queryBus = gson.fromJson(request.getReader(), BusSeatDTO.class);
+		List<RehaBus> busList = busService.findByFilter(
+				queryBus.getMinSeats(), 
+				queryBus.getMaxSeats(), 
+				queryBus.getMinWheels(),
+				queryBus.getMaxWheels()
+		);
+		
+		Map<String, Object> result = new HashMap<>();
+		if (busList != null && !busList.isEmpty()) {
+			result.put("find", true);
+			result.put("busList", busList);
+		} else {
+			result.put("find", false);
+			result.put("message", "沒有找到任何巴士資料");
+		}
+		
+		gson.toJson(result, response.getWriter());
+	}
 
 	
 
@@ -52,13 +59,4 @@ public class FilterBus extends HttpServlet {
 			throws ServletException, IOException {
 		doGet(request, response);
 	}
-	 private Integer parseIntOrNull(String num) {
-	        if (num == null || num.isBlank()) 
-	        	return null;
-	        try {
-	            return Integer.valueOf(num.trim());
-	        } catch (NumberFormatException e) {
-	            return null;
-	        }
-	    }
-	}
+}

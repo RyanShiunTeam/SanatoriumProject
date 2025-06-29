@@ -10,13 +10,8 @@ import utils.HikariCputil;
 public class BusService {
 
 	//商業邏輯
-	private BusDAO busDao;
+	private BusDAO busDao = new BusDAO();
 
-	public BusService() throws SQLException {
-		HikariCputil.getDataSource();
-		this.busDao = new BusDAO();
-
-	}
 
 	// 批次匯入csv，回傳實際匯入筆數
 	public int importFromCsv(String csvFilePath) {
@@ -32,61 +27,41 @@ public class BusService {
 	}
 
 	// 新增復康巴士
-	public void createBus(RehaBus bus) {
-		if (bus.getSeatCapacity() <= 0 || bus.getWheelchairCapacity() <= 0)
-			throw new IllegalArgumentException("座位與輪椅數量都必須大於0");
-
+	public boolean createBus(RehaBus bus) {
 		try {
-			if (!busDao.insertBus(bus))
-				throw new RuntimeException("新增失敗，請稍後再試！");
-
+			return busDao.insertBus(bus);
 		} catch (SQLException e) {
-			throw new RuntimeException("資料庫錯誤，新增復康巴士失敗！", e);
-		}
+			e.printStackTrace();
+			return false;
+		} 
 	}
 
 	// 刪除復康巴士
-	public void deleteBus(int busId) {
-		if (busId <= 0)
-			throw new IllegalArgumentException("編號錯誤，請輸入正確的數字");
-
+	public boolean deleteBus(int busId) {
 		try {
-			if (!busDao.deleteBus(busId))
-				throw new RuntimeException("查無此筆，刪除失敗！");
-
+			return busDao.deleteBus(busId);
 		} catch (SQLException e) {
-			throw new RuntimeException("資料庫錯誤，新增復康巴士失敗！", e);
+			e.printStackTrace();
+			return false;
 		}
 	}
 
 	// 修改指定巴士的座位與輪椅容量
-	public  void updateBus(int busId, int seatCapacity, int wheelchairCapacity) {
-		if (busId <= 0)
-			throw new IllegalArgumentException("車輛號碼錯誤，請再輸入一次");
-
-		if (seatCapacity <= 0 || wheelchairCapacity <= 0)
-			throw new IllegalArgumentException("座位與輪椅數量都必須大於0");
-
-		RehaBus bus = new RehaBus();
-		bus.setBusId(busId);
-		bus.setSeatCapacity(seatCapacity);
-		bus.setWheelchairCapacity(wheelchairCapacity);
-
+	public boolean updateBus(int busId, int seatCapacity, int wheelchairCapacity) {
 		try {
-			if (!busDao.updateBus(bus))
-				throw new RuntimeException("更新失敗，請再檢查一次！");
-
+			return busDao.updateBus(busId, seatCapacity, wheelchairCapacity);
 		} catch (SQLException e) {
-			throw new RuntimeException("資料庫錯誤，更改復康巴士失敗！", e);
+			e.printStackTrace();
+			return false;
 		}
 	}
 
 	// 根據座位與輪椅容量範圍，以及巴士 ID 範圍查詢復康巴士
 	public List<RehaBus> findByFilter(Integer minSeats, Integer maxSeats, Integer minWheelchairs,
-			Integer maxWheelchairs, Integer BusId) {
+			Integer maxWheelchairs) {
 
 		try {
-			return busDao.findByFilter(minSeats, maxSeats, minWheelchairs, maxWheelchairs, BusId);
+			return busDao.findByFilter(minSeats, maxSeats, minWheelchairs, maxWheelchairs);
 		} catch (SQLException e) {
 			throw new RuntimeException("依條件查詢復康巴士失敗！", e);
 		}

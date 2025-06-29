@@ -2,10 +2,12 @@ package bus.servlet;
 
 import java.io.IOException;
 
-import java.sql.SQLException;
+
+import com.google.gson.Gson;
 
 import bus.bean.RehaBus;
-import bus.dao.BusDAO;
+
+import bus.service.BusService;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
@@ -17,49 +19,34 @@ import jakarta.servlet.http.HttpServletResponse;
 public class InsertBus extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 
-	@Override
+	private BusService busService = new BusService();
+	private Gson gson = new Gson();
+	
 	protected void doGet(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
-request.getRequestDispatcher("/BusPage/insertBus.jsp").forward(request, response);
+		request.setCharacterEncoding("UTF-8");
+		response.setContentType("application/json;charset=UTF-8");
+		
+		RehaBus addBus = gson.fromJson(request.getReader(), RehaBus.class);
+		
+		String carDealership = addBus.getCarDealership();
+		String busBrand = addBus.getBusBrand();
+		String busModel = addBus.getBusModel();
+		int seatCapacity = addBus.getSeatCapacity();
+		int wheelchairCapacity = addBus.getWheelchairCapacity();
+		String licensePlate = addBus.getLicensePlate();
+		RehaBus newBus = new RehaBus(carDealership, busBrand, busModel, seatCapacity, wheelchairCapacity, licensePlate);
+		
+		Boolean success = busService.createBus(newBus);
+		String result = success ? "新增成功" : "新增失敗";
+		
+		gson.toJson(result, response.getWriter());
 
 	}
 
-		@Override
 		protected void doPost(HttpServletRequest request, HttpServletResponse response)
 				throws ServletException, IOException {
 			doGet(request, response);
-		
-		// 封裝成Bean，再丟給DAO
-		RehaBus rehabus = new RehaBus();
-		rehabus.setCarDealership(request.getParameter("carDealership"));
-		rehabus.setBusBrand(request.getParameter("busBrand"));
-		rehabus.setBusModel(request.getParameter("busModel"));
-		rehabus.setSeatCapacity(Integer.parseInt(request.getParameter("seatCapacity")));
-		rehabus.setWheelchairCapacity(Integer.parseInt(request.getParameter("wheelchairCapacity")));
-		rehabus.setLicensePlate(request.getParameter("licensePlate"));
-		request.setAttribute("bus", rehabus);
-		
-		// 呼叫DAO
-		try {
-			BusDAO dao = new BusDAO();
-
-			if (dao.insertBus(rehabus)) {
-				response.sendRedirect(request.getContextPath() + "/GetAllBus");
-				return;
-			
-			} else {
-				request.setAttribute("error", "新增失敗，請檢查輸入資料。");
-			}
-
-		} catch (SQLException se) {
-			request.setAttribute("error","資料庫錯誤:" + se.getMessage());
-		
-		} catch (Exception e) {
-			request.setAttribute("error", "系統發生錯誤：" + e.getMessage());
-		}
-		
-		request.getRequestDispatcher("/BusPage/insertBus.jsp").forward(request, response);
-
 	}
     
 }

@@ -2,39 +2,40 @@
 <html lang="zh-Hant">
 <head>
     <meta charset="UTF-8">
-    <title>查詢員工資料</title>
-    <link rel="stylesheet" href="../CSS/query.css">
+    <title>員工資料</title>
+    <!-- 新增引入 CSS 樣式 -->
+    <link rel="stylesheet" href="../CSS/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="../CSS/main.css">
 </head>
 <body>
   <div class="login-container">
-    <h2>查詢員工資料</h2>
-    <form id="queryForm">
-      <label>
-        輸入員工姓名
-        <input type="text" id="userName" placeholder="簡單打一個字也好"/>
-      </label>
-      <button type="submit">查詢</button>
+    <!-- 查詢輸入框 -->
+    <form id="queryForm" class="mb-3">
+      <div class="input-group">
+        <span class="input-group-text"><i class="fa fa-user"></i></span>
+        <input type="text" id="userName" class="form-control" placeholder="請輸入員工姓名關鍵字"/>
+        <button type="submit" class="btn btn-primary">
+          <i class="fa fa-search"></i> 查詢
+        </button>
+      </div>
     </form>
-	<!-- 查詢全部與檢試停權 -->
-  <div class="actions">
-    <button type="button" id="getAll">查詢全部員工</button>
-    <!-- 只有 Admin 可以看到此按鈕 -->
-    <button type="button" id="banList" style="display: none;">檢視停權員工</button>
-  </div>	
-	<div id="resultBox"></div>
-	<br>
-
-
-    <div class="footer-actions">
-      <a href="../../backHome.html">
-        <button type="button">回後台首頁</button>
-      </a>
+    
+    <!-- 查詢全部與檢視停權 -->
+    <div class="actions my-3">
+      <button type="button" id="getAll" class="btn btn-info me-2">查詢全部員工</button>
+      <!-- 只有 Admin 可以看到此按鈕 -->
+      <button type="button" id="banList" class="btn btn-warning me-2" style="display: none;">檢視停權員工</button>
+      <!-- 新增員工按鈕移到這裡 -->
       <a href="addEmp.html">
-        <button type="button">新增員工</button>
+        <button type="button" class="btn btn-success">新增員工</button>
       </a>
-    </div>
+    </div>	
+    <div id="resultBox"></div>
 
-	<script src="../JS/query.js"></script>
+    <script src="../JS/query.js"></script>
   </div>
+</body>
+</html>
 </body>
 </html>

@@ -44,18 +44,51 @@ document.addEventListener("DOMContentLoaded", () => {
         })
         .then(res => { if (!res.ok) throw new Error(`HTTP ${res.status}`); return res.json(); })
         .then(message => {
-            msg.textContent = message;
-
             if (message === "修改成功") {
                 form.reset();
+                showSuccessNotification();
+            } else {
+                msg.textContent = message;
             }
         })
         .catch(err => {
             console.log(err);
             msg.textContent = "發生錯誤，請稍後再試";
         }); 
+    });
 
-    })
+    // 顯示成功通知
+    function showSuccessNotification() {
+        // 清空原有訊息
+        msg.innerHTML = '';
+        
+        // 創建確認修改元素
+        const confirmDiv = document.createElement('div');
+        confirmDiv.style.backgroundColor = '#6366F1';
+        confirmDiv.style.color = 'white';
+        confirmDiv.style.padding = '15px';
+        confirmDiv.style.borderRadius = '5px';
+        confirmDiv.style.marginBottom = '15px';
+        confirmDiv.style.textAlign = 'center';
+        confirmDiv.style.display = 'flex';
+        confirmDiv.style.alignItems = 'center';
+        confirmDiv.style.justifyContent = 'center';
+        
+        const checkIcon = document.createElement('span');
+        checkIcon.innerHTML = '✓';
+        checkIcon.style.marginRight = '8px';
+        
+        const confirmText = document.createElement('span');
+        confirmText.textContent = '修改完成';
+        
+        confirmDiv.appendChild(checkIcon);
+        confirmDiv.appendChild(confirmText);
+        
+        
+        // 將所有元素添加到訊息區域
+        msg.appendChild(confirmDiv);
+        
+    }
 
     // 去後端要權限總表
     fetch(`/${ctx}/GetRole`)
