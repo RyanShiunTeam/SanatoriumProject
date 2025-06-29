@@ -3,6 +3,8 @@ package device.controller;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.*;
+import utils.EmpService;
+
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.List;
@@ -42,6 +44,11 @@ public class DeviceExportServlet extends HttpServlet {
                         d.getCategoryId()
                 );
             }
+            // 記錄操作
+    		Integer loginUserId = (Integer) request.getSession().getAttribute("loginUserId");
+    		if (loginUserId != null) {
+    			new EmpService().record(loginUserId, "正在偷取公司資料", null);
+    		}
         } catch (Exception e) {
             e.printStackTrace();
             response.getWriter().println("匯出失敗：" + e.getMessage());

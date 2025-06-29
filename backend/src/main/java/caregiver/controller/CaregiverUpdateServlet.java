@@ -7,6 +7,8 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.Part;
+import utils.EmpService;
+
 import java.io.IOException;
 
 /**
@@ -188,6 +190,12 @@ public class CaregiverUpdateServlet extends BaseCaregiverServlet {
                 System.out.println("更新結果: " + success);
                 
                 if (success) {
+                    // 記錄操作
+            		Integer loginUserId = (Integer) request.getSession().getAttribute("loginUserId");
+            		if (success && loginUserId != null) {
+            			new EmpService().record(loginUserId, "修改照服員", caregiver.getCaregiverId());
+            		}
+                	
                     System.out.println("更新成功，準備重導向");
                     request.getSession().setAttribute("message", "照服員資料更新成功！");
                     String redirectUrl = request.getContextPath() + "/caregiver/read/";

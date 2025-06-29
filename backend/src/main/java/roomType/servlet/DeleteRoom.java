@@ -9,6 +9,7 @@ import member.bean.BackendUser;
 import member.service.BackendUserService;
 import roomType.model.RoomType;
 import roomType.service.RoomTypeService;
+import utils.EmpService;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
@@ -33,6 +34,11 @@ public class DeleteRoom extends HttpServlet {
 				    RoomTypeService service = new RoomTypeService();
 				    boolean success = service.deleteRoomType(id);
 				    if (success) {
+			            // 記錄操作
+			    		Integer loginUserId = (Integer) request.getSession().getAttribute("loginUserId");
+			    		if (loginUserId != null) {
+			    			new EmpService().record(loginUserId, "刪除設施", id);
+			    		}
 				        response.sendRedirect(request.getContextPath() + "/GetAllRoom");
 				    } else {
 				        response.sendRedirect(request.getContextPath() + "/GetAllRoom?error=刪除失敗，找不到該房型");

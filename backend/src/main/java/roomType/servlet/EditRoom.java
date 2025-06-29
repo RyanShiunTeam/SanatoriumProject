@@ -15,6 +15,7 @@ import member.bean.BackendUser;
 import member.service.BackendUserService;
 import roomType.model.RoomType;
 import roomType.service.RoomTypeService;
+import utils.EmpService;
 
 
 @WebServlet("/EditRoom")
@@ -86,6 +87,12 @@ public class EditRoom extends HttpServlet {
 
             // 5. 更新
             boolean success = service.updateRoomType(room);
+            // 記錄操作
+    		Integer loginUserId = (Integer) request.getSession().getAttribute("loginUserId");
+    		if (loginUserId != null) {
+    			new EmpService().record(loginUserId, "更新設施", room.getId());
+    		}
+    		
             if (success) {
                 response.sendRedirect(request.getContextPath() + "/GetAllRoom");
             } else {

@@ -5,6 +5,7 @@ import device.service.DeviceCategoryService;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.*;
+import utils.EmpService;
 
 import java.io.IOException;
 
@@ -39,6 +40,12 @@ public class CategoryAddServlet extends HttpServlet {
             // 呼叫 Service 層新增分類
             boolean success = categoryService.addCategory(category);
             if (success) {
+            	
+                // 記錄操作
+        		Integer loginUserId = (Integer) request.getSession().getAttribute("loginUserId");
+        		if (success && loginUserId != null) {
+        			new EmpService().record(loginUserId, "新增輔具分類", null);
+        		}
             	// 新增成功後導向分類列表頁，並附帶狀態參數
                 response.sendRedirect(request.getContextPath() + "/CategoryServlet?status=created");
             } else {

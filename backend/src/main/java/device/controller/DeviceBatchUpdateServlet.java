@@ -5,6 +5,7 @@ import device.service.DeviceService;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.*;
+import utils.EmpService;
 
 import java.io.IOException;
 import java.math.BigDecimal;
@@ -71,6 +72,12 @@ public class DeviceBatchUpdateServlet extends HttpServlet {
             for (Device device : updatedDevices) {
                 deviceService.updateDevice(device);
             }
+            
+            // 記錄操作
+    		Integer loginUserId = (Integer) request.getSession().getAttribute("loginUserId");
+    		if (loginUserId != null) {
+    			new EmpService().record(loginUserId, "批次修改輔具", null);
+    		}
 
          // 更新成功後導向列表頁
             response.sendRedirect(request.getContextPath() + "/DeviceServlet?status=batchUpdated");

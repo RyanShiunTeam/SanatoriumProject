@@ -13,6 +13,7 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import utils.EmpService;
 
 @WebServlet("/DeleteBus")
 public class DeleteBus extends HttpServlet {
@@ -29,13 +30,20 @@ public class DeleteBus extends HttpServlet {
 		try {
 			RehaBus deleteBus = gson.fromJson(request.getReader(), RehaBus.class);
 			Map<String, Object> result = new HashMap<>();
-			if (busService.deleteBus(deleteBus.getBusId())) {
+			boolean success = busService.deleteBus(deleteBus.getBusId());
+			if (success) {
 				result.put("success", true);
 				result.put("message", "復康巴士刪除成功");
 			} else {
 				result.put("success", false);
 				result.put("message", "復康巴士刪除失敗，請稍後再試");
 			}
+			
+			Integer loginUserId = (Integer) request.getSession().getAttribute("loginUserId");
+			if (success && loginUserId != null) {
+				new EmpService().record(loginUserId, "刪除巴士", deleteBus.getBusId());
+			}
+			
 			gson.toJson(result, response.getWriter());
 		} catch (Exception e) {
 			Map<String, Object> errorResult = new HashMap<>();

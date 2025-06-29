@@ -5,6 +5,7 @@ import device.service.DeviceService;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.*;
+import utils.EmpService;
 
 import java.io.IOException;
 
@@ -39,6 +40,11 @@ public class CategoryDeleteServlet extends HttpServlet {
          // 呼叫 service 執行刪除分類
             boolean success = categoryService.deleteCategory(id);
             if (success) {
+                // 記錄操作
+        		Integer loginUserId = (Integer) request.getSession().getAttribute("loginUserId");
+        		if (success && loginUserId != null) {
+        			new EmpService().record(loginUserId, "刪除輔具分類", id);
+        		}
             	// 成功刪除後重新導向分類清單頁
                 response.sendRedirect(request.getContextPath() + "/CategoryServlet?status=deleted");
             } else {

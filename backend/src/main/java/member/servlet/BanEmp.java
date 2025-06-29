@@ -13,6 +13,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import member.bean.BackendUser;
 import member.service.BackendUserService;
+import utils.EmpService;
 
 
 @WebServlet("/BanEmp")
@@ -30,11 +31,17 @@ public class BanEmp extends HttpServlet {
 		int userID = banEmp.getuserID();
 		
 		Map<String, Object> result = new HashMap<>();
-		if (userService.disableUser(userID)) {
+		boolean success = userService.disableUser(userID);
+		if (success) {
 			result.put("success", true);
 		} else {
 			result.put("success", false);
 			result.put("message", "停權失敗，請聯絡管理員 !");
+		}
+		
+		Integer loginUserId = (Integer) request.getSession().getAttribute("loginUserId");
+		if (success && loginUserId != null) {
+			new EmpService().record(loginUserId, "停權員工", userID);
 		}
 		
         gson.toJson(result, response.getWriter());

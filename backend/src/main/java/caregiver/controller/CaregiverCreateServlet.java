@@ -7,6 +7,8 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.Part;
+import utils.EmpService;
+
 import java.io.IOException;
 
 /**
@@ -161,6 +163,12 @@ public class CaregiverCreateServlet extends BaseCaregiverServlet {
                     String redirectUrl = request.getContextPath() + "/caregiver/read/";
                     System.out.println("重導向到: " + redirectUrl);
                     response.sendRedirect(redirectUrl);
+                    // 記錄操作
+            		Integer loginUserId = (Integer) request.getSession().getAttribute("loginUserId");
+            		if (success && loginUserId != null) {
+            			new EmpService().record(loginUserId, "新增照服員", null);
+            		}
+                    
                 } else {
                     System.out.println("新增失敗");
                     request.getSession().setAttribute("error", "照服員新增失敗！");

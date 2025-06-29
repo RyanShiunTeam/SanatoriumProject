@@ -11,6 +11,7 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
 import member.bean.BackendUser;
 import member.service.BackendUserService;
 
@@ -40,7 +41,12 @@ public class Login extends HttpServlet {
 		if (user != null) {
 			// 檢查是否被停權
 			if (user.isActive()) {
-				// 成功登入
+				// 後端也存使用者資訊
+				HttpSession session = request.getSession();
+				session.setAttribute("loginUserId", user.getuserID());
+				session.setAttribute("loginUserName", user.getUserName());
+				System.out.println("目前登入者 ID: " + user.getuserID());
+				// 將結果放入準備回傳
 				result.put("success", true);
 				result.put("role", user.getRole());
 				// 將目前登入者資訊放在前端

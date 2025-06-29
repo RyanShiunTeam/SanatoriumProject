@@ -5,6 +5,7 @@ import device.service.DeviceCategoryService;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.*;
+import utils.EmpService;
 
 import java.io.IOException;
 
@@ -40,6 +41,12 @@ public class CategoryEditServlet extends HttpServlet {
             // 呼叫 service 層執行更新
             boolean updated = categoryService.updateCategory(category);
             if (updated) {
+                // 記錄操作
+        		Integer loginUserId = (Integer) request.getSession().getAttribute("loginUserId");
+        		if (updated && loginUserId != null) {
+        			new EmpService().record(loginUserId, "更新輔具分類", id);
+        		}
+            	
             	// 更新成功，重新導向分類列表頁，並附加狀態參數
                 response.sendRedirect(request.getContextPath() + "/CategoryServlet?status=updated");
             } else {
