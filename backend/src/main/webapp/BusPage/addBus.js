@@ -1,5 +1,5 @@
 document.addEventListener("DOMContentLoaded", () => {
-    const busIdInput = document.querySelector("#busId");
+    // 移除 busIdInput
     const carDealershipInput = document.querySelector("#carDealership");
     const busBrandInput = document.querySelector("#busBrand");
     const busModelInput = document.querySelector("#busModel");
@@ -14,7 +14,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     // Handle add button click
     addButton.addEventListener("click", () => {
-        const busId = busIdInput.value;
+        // 不再取 busId
         const carDealership = carDealershipInput.value;
         const busBrand = busBrandInput.value;
         const busModel = busModelInput.value;
@@ -22,8 +22,8 @@ document.addEventListener("DOMContentLoaded", () => {
         const wheelchairCapacity = wheelchairCapacityInput.value;
         const licensePlate = licensePlateInput.value;
 
-        // Validate inputs
-        if (!busId || !carDealership || !busBrand || !busModel || !seatCapacity || !wheelchairCapacity || !licensePlate) {
+        // 驗證欄位
+        if (!carDealership || !busBrand || !busModel || !seatCapacity || !wheelchairCapacity || !licensePlate) {
             messageDiv.textContent = "所有欄位均為必填！";
             messageDiv.classList.remove("d-none", "alert-success");
             messageDiv.classList.add("alert-danger");
@@ -34,7 +34,6 @@ document.addEventListener("DOMContentLoaded", () => {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({
-                busId,
                 carDealership,
                 busBrand,
                 busModel,
@@ -48,7 +47,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 return res.json();
             })
             .then(data => {
-                messageDiv.textContent = data; // Display backend response message
+                messageDiv.textContent = data; // 顯示後端回傳訊息
                 messageDiv.classList.remove("d-none", "alert-danger");
                 messageDiv.classList.add("alert-success");
                 errorDiv.classList.add("d-none");
