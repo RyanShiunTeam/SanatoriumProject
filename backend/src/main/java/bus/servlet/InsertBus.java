@@ -40,7 +40,7 @@ public class InsertBus extends HttpServlet {
 		
 		Boolean success = busService.createBus(newBus);
 		String result = success ? "新增成功" : "新增失敗";
-		
+
 		Integer loginUserId = (Integer) request.getSession().getAttribute("loginUserId");
 		if (success && loginUserId != null) {
 			new EmpService().record(loginUserId, "新增巴士", null);

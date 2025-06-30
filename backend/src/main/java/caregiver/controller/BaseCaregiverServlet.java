@@ -40,7 +40,6 @@ public abstract class BaseCaregiverServlet extends HttpServlet {
     private static final Set<String> ALLOWED_EXTENSIONS = Set.of(
         ".jpg", ".jpeg", ".png", ".gif", ".webp"
     );
-    
     // 快取已找到的 SanatoriumProject 路徑
     private static String cachedSanatoriumPath = null;
     
@@ -180,7 +179,7 @@ public abstract class BaseCaregiverServlet extends HttpServlet {
                     // Eclipse Web 專案結構  
                     currentDir.getAbsolutePath() + File.separator + "WebContent" + File.separator + "CaregiverPage" + File.separator + "uploads" + File.separator + "photos",
                     // 簡化結構
-                    currentDir.getAbsolutePath() + File.separator + "CaregiverPage" + File.separator + "uploads" + File.separator + "photos"
+                    currentDir.getAbsolutePath() + File.separator +"backend" + File.separator +"CaregiverPage" + File.separator + "uploads" + File.separator + "photos"
                 };
                 
                 for (String path : possiblePaths) {
